@@ -1,0 +1,25 @@
+{% load i18n fb_tags %}
+
+<div id="toolbar">
+  <form id="changelist-search" action="." method="get">
+    <div><!-- DIV needed for valid HTML -->
+      <label for="searchbar"><img alt="Search" src="{{ STATIC_URL }}filebrowser/img/icon-searchbox.png"></label>
+      <input type="text" name="q" value="{{ query.q }}" id="searchbar" />
+      {% if query.filter_type %}<input type="hidden" name="filter_type" value="{{ query.filter_type }}" />{% endif %}
+      {% if query.filter_date %}<input type="hidden" name="filter_date" value="{{ query.filter_date }}" />{% endif %}
+      {% if query.o %}<input type="hidden" name="o" value="{{ query.o }}" />{% endif %}
+      {% if query.ot %}<input type="hidden" name="ot" value="{{ query.ot }}" />{% endif %}
+      {% if query.pop %}<input type="hidden" name="pop" value="{{ query.pop }}" />{% endif %}
+      {% if query.type %}<input type="hidden" name="type" value="{{ query.type }}" />{% endif %}
+      {% if query.format %}<input type="hidden" name="format" value="{{ query.format }}" />{% endif %}
+      {% if query.dir %}<input type="hidden" name="dir" value="{{ query.dir }}" />{% endif %}
+      <input type="submit" value="{% trans "Search" %}" />
+      {% if results_var.results_total %}
+      {% if query.filter_type or query.filter_date or query.q %}
+      <span class="small quiet">{% blocktrans count results_var.results_current as counter %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktrans %} (<a href="{% query_string "" "filter_date,filter_type,q" %}">{% blocktrans with results_var.results_total as full_result_count %}{{ full_result_count }} total{% endblocktrans %}</a>)</span>
+      {% endif %}
+      {% endif %}
+    </div>
+  </form>
+</div>
+<script type="text/javascript">document.getElementById("searchbar").focus();</script>
