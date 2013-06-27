@@ -22,3 +22,7 @@ function OpenFile(fileUrl) {
     window.top.opener.focus();
 }
 
+if (CKEDITOR) {
+    CKEDITOR.config.filebrowserBrowseUrl = '/admin/filebrowser/browse?pop=3';
+}
+

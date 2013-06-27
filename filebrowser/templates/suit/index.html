@@ -1,0 +1,176 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_list admin_urls %}
+{% load fb_tags fb_pagination %}
+{% load url from future %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}css/suit-filebrowser.css" />
+    {#  <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}" />#}
+    {% if cl.formset %}
+        {#    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />#}
+    {% endif %}
+    {% if cl.formset or action_form %}
+        {% url 'admin:jsi18n' as jsi18nurl %}
+        <script type="text/javascript" src="{{ jsi18nurl|default:'../../jsi18n/' }}"></script>
+    {% endif %}
+    {{ media.css }}
+    {% if not actions_on_top and not actions_on_bottom %}
+        <style>
+            {#      #changelist table thead th:first-child {width: inherit}#}
+        </style>
+    {% endif %}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {% ifequal query.pop '1' %} <!-- FileBrowseField -->
+        <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_FileBrowseField.js"></script>
+    {% endifequal %}
+    {% ifequal query.pop '2' %} <!-- TinyMCE -->
+        <script language="javascript" type="text/javascript" src="{{ settings_var.URL_TINYMCE }}tiny_mce_popup.js"></script>
+        <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_TinyMCE.js"></script>
+        {% if query.mce_rdomain %}<script language="javascript">document.domain = "{{ query.mce_rdomain }}"</script>{% endif %}
+    {% endifequal %}
+    {% ifequal query.pop '3' %} <!-- CKeditor (former "FCKeditor") -->
+        <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_CKEditor.js"></script>
+    {% endifequal %}
+    {% ifequal query.pop '4' %} <!-- Redactor -->
+        <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_Redactor.js"></script>
+    {% endifequal %}
+    {{ media.js }}
+    {% if action_form %}{% if actions_on_top or actions_on_bottom %}
+        <script type="text/javascript">
+            (function ($) {
+                $(document).ready(function ($) {
+                    $("tr input.action-select").actions();
+                });
+            })(django.jQuery);
+        </script>
+    {% endif %}{% endif %}
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}
+    {% include "suit/include/breadcrumbs.html" %}
+{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+    <div id="content-main" class="inner-two-columns">
+        <div class="inner-right-column">
+            {% block object-tools %}
+
+                <div class="object-tools">
+                    {% block object-tools-items %}
+                        <div class="box box-controls">
+                            <a href="{% url "fb_upload" %}{% query_string '' 'p' %}" class="btn btn-success">
+                                <i class="icon-upload icon-white"></i>&nbsp;
+                                {% trans "Upload" %}
+                            </a><br>
+                            <a href="{% url "fb_mkdir" %}{% query_string '' 'p' %}" class="btn btn-success">
+                                <i class="icon-plus-sign icon-white"></i>&nbsp;
+                                {% trans "New Folder" %}
+                            </a>
+                        </div>
+
+                        <div class="box box-controls">
+                            <h2>{% trans "Filters" %}</h2>
+                            <hr>
+                            <a href="{% query_string "" "filter_date,p" %}" class="btn btn-warning">{% trans "Any Date" %}</a>
+                            <a href="{% query_string "" "filter_date,p" %}&amp;filter_date=today" class="btn btn-warning">{% trans "Today" %}</a>
+                            <a href="{% query_string "" "filter_date,p" %}&amp;filter_date=past7days" class="btn btn-warning">{% trans "Past 7 days" %}</a>
+                            <a href="{% query_string "" "filter_date,p" %}&amp;filter_date=thismonth" class="btn btn-warning">{% trans "Past 30 days" %}</a>
+                            <a href="{% query_string "" "filter_date,p" %}&amp;filter_date=thisyear" class="btn btn-warning">{% trans "This year" %}</a>
+                            <a href="{% query_string "" "filter_type,p" %}" class="btn btn-warning">{% trans "All" %}</a>
+                            {% for extension in settings_var.EXTENSIONS %}
+                                <a href="{% query_string "" "filter_type,p" %}&amp;filter_type={{ extension }}" class="btn btn-warning">{% trans extension %}</a></li>
+                            {% endfor %}
+                        </div>
+                    {% endblock %}
+                </div>
+
+            {% endblock %}
+        </div>
+        <div class="inner-center-column">
+            <div class="module filtered" id="changelist">
+                <div class="toolbar-content">
+
+
+                    {% block search %}
+                        <div id="toolbar">
+                            <form id="changelist-search" action="." method="get" class="form-inline">
+                                <div class="search-container">
+                                    <input type="text" size="40" name="q" value="{{ query.q }}" id="searchbar" placeholder="{% block search_placeholder %}{% trans 'keyword'|capfirst %}{% endblock %}"/>&nbsp;
+                                    <script type="text/javascript">document.getElementById("searchbar").focus();</script>
+                                    {% if query.filter_type %}<input type="hidden" name="filter_type" value="{{ query.filter_type }}" />{% endif %}
+                                    {% if query.filter_date %}<input type="hidden" name="filter_date" value="{{ query.filter_date }}" />{% endif %}
+                                    {% if query.o %}<input type="hidden" name="o" value="{{ query.o }}" />{% endif %}
+                                    {% if query.ot %}<input type="hidden" name="ot" value="{{ query.ot }}" />{% endif %}
+                                    {% if query.pop %}<input type="hidden" name="pop" value="{{ query.pop }}" />{% endif %}
+                                    {% if query.type %}<input type="hidden" name="type" value="{{ query.type }}" />{% endif %}
+                                    {% if query.format %}<input type="hidden" name="format" value="{{ query.format }}" />{% endif %}
+                                    {% if query.dir %}<input type="hidden" name="dir" value="{{ query.dir }}" />{% endif %}
+                                    <input type="submit" value="{% trans 'Search' %}" class="btn btn-info"/>
+                                    {% if results_var.results_total %}
+                                        {% if query.filter_type or query.filter_date or query.q %}
+                                            <span class="small quiet result-count">{% blocktrans count results_var.results_current as counter %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktrans %} (<a href="{% query_string "" "filter_date,filter_type,q" %}">{% blocktrans with results_var.results_total as full_result_count %}{{ full_result_count }} total{% endblocktrans %}</a>)</span>
+                                        {% endif %}
+                                    {% endif %}
+
+                                </div>
+                            </form>
+                        </div>
+                    {% endblock %}
+                </div>
+                {% block result_list %}
+                    {% if results_var.results_current %}
+                        <div class="results">
+                            <table id="result_list" class="table table-striped table-bordered table-hover table-condensed">
+                                <thead>
+                                <tr>
+                                    <!-- SELECT -->
+                                    {% if query.pop == "1" and results_var.select_total %}<th></th>{% endif %}
+                                    {% if query.pop == "2" and results_var.select_total %}<th></th>{% endif %}
+                                    {% if query.pop == "3" and results_var.select_total %}<th></th>{% endif %}
+                                    <!-- FILETYPE -->
+                                    {% ifequal query.o "filetype_checked" %}<th class="sorted {{ query.ot }}ending"><a href="{% query_string "" "o,ot,p" %}&amp;ot={% ifequal query.ot "desc" %}asc{% else %}desc{% endifequal %}&amp;o=filetype_checked">{% trans "Type" %}</a></th>{% endifequal %}
+                                    {% ifnotequal query.o "filetype_checked" %}<th><a href="{% query_string "" "o,ot,p" %}&amp;ot=asc&amp;o=filetype_checked">{% trans "Type" %}</a></th>{% endifnotequal %}
+                                    <!-- THUMB -->
+                                    <th>{% trans "Thumbnail" %}</th>
+                                    <!-- FILENAME / DIMENSIONS  -->
+                                    {% ifequal query.o "filename_lower" %}<th class="filename sorted {{ query.ot }}ending"><a href="{% query_string "" "o,ot,p" %}&amp;ot={% ifequal query.ot "desc" %}asc{% else %}desc{% endifequal %}&amp;o=filename_lower">{% trans "Filename" %}</a></th>{% endifequal %}
+                                    {% ifnotequal query.o "filename_lower" %}<th class="filename"><a href="{% query_string "" "o,ot,p" %}&amp;ot=asc&amp;o=filename_lower">{% trans "Filename" %}</a></th>{% endifnotequal %}
+                                    <!-- SIZE -->
+                                    {% ifequal query.o "filesize" %}<th class="sorted {{ query.ot }}ending"><a href="{% query_string "" "o,ot,p" %}&amp;ot={% ifequal query.ot "desc" %}asc{% else %}desc{% endifequal %}&amp;o=filesize">{% trans "Size" %}</a></th>{% endifequal %}
+                                    {% ifnotequal query.o "filesize" %}<th><a href="{% query_string "" "o,ot,p" %}&amp;ot=asc&amp;o=filesize">{% trans "Size" %}</a></th>{% endifnotequal %}
+                                    <!-- DATE -->
+                                    {% ifequal query.o "date" %}<th class="sorted {{ query.ot }}ending"><a href="{% query_string "" "o,ot,p" %}&amp;ot={% ifequal query.ot "desc" %}asc{% else %}desc{% endifequal %}&amp;o=date">{% trans "Date" %}</a></th>{% endifequal %}
+                                    {% ifnotequal query.o "date" %}<th><a href="{% query_string "" "o,ot,p" %}&amp;ot=asc&amp;o=date">{% trans "Date" %}</a></th>{% endifnotequal %}
+                                    <!-- ACTIONS -->
+                                    <th>&nbsp;</th>
+                                    {% if results_var.delete_total %}<th>&nbsp;</th>{% endif %}
+                                    <!-- DEBUG -->
+                                    {% if settings_var.DEBUG %}<th>Debug</th>{% endif %}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% include "suit/include/filelisting.html" %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-block alert-info">
+                            <h4>{% trans 'Nothing found' %}!</h4>
+                        </div>
+                    {% endif %}
+                {% endblock %}
+                {% block pagination %}
+                    {% pagination %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

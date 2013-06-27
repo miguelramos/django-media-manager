@@ -127,4 +127,7 @@ _('Document')
 _('Audio')
 _('Code')
 
+#Suit Template
+SUIT_TEMPLATE = getattr(settings, "FILEBROWSER_SUIT_TEMPLATE", None)
+
 

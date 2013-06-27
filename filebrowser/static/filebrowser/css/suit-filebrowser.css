@@ -1,0 +1,17 @@
+.box-controls {
+    margin-bottom: 20px;
+}
+
+.box-controls a {
+    margin-top: 10px;
+}
+
+body .redactor_toolbar li a.redactor_btn_browser {
+    /*width: 25px;
+    height: 25px;
+    vertical-align: text-top;
+    background-image: url("../img/glyphicons-halflings.png");
+    background-repeat: no-repeat;
+    background-position: -408px -120px;*/
+    background: url("../img/explorer.png") no-repeat;
+}

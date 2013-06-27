@@ -56,6 +56,14 @@ def _check_access(request, *path):
         raise Http404
     return abs_path
 
+def _template():
+    if fb_settings.SUIT_TEMPLATE:
+        path = 'suit/'
+    else:
+        path = 'filebrowser/'
+
+    return path
+
 def browse(request):
     """
     Browse Files/Directories.
@@ -64,6 +72,11 @@ def browse(request):
     query = request.GET.copy()
     path = get_path(query.get('dir', ''))
     directory = get_path('')
+
+    if 'pop' in query:
+        is_popup = True
+    else:
+        is_popup = False
 
     if path is not None:
         abs_path = _check_access(request, path)
@@ -149,7 +162,7 @@ def browse(request):
     except (EmptyPage, InvalidPage):
         page = p.page(p.num_pages)
     
-    return render_to_response('filebrowser/index.html', {
+    return render_to_response(_template() + 'index.html', {
         'dir': path,
         'p': p,
         'page': page,
@@ -159,7 +172,8 @@ def browse(request):
         'title': _(u'FileBrowser'),
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
-        'breadcrumbs_title': ""
+        'breadcrumbs_title': "",
+        'is_popup': is_popup
     }, context_instance=Context(request))
 browse = staff_member_required(never_cache(browse))
 
@@ -178,6 +192,12 @@ def mkdir(request):
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
+
+    if 'pop' in query:
+        is_popup = True
+    else:
+        is_popup = False
+
     if path is None:
         msg = _('The requested Folder does not exist.')
         messages.warning(request,message=msg)
@@ -213,13 +233,14 @@ def mkdir(request):
     else:
         form = MakeDirForm(abs_path)
     
-    return render_to_response('filebrowser/makedir.html', {
+    return render_to_response(_template() + 'makedir.html', {
         'form': form,
         'query': query,
         'title': _(u'New Folder'),
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
-        'breadcrumbs_title': _(u'New Folder')
+        'breadcrumbs_title': _(u'New Folder'),
+        'is_popup': is_popup
     }, context_instance=Context(request))
 mkdir = staff_member_required(never_cache(mkdir))
 
@@ -234,6 +255,12 @@ def upload(request):
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
+
+    if 'pop' in query:
+        is_popup = True
+    else:
+        is_popup = False
+
     if path is None:
         msg = _('The requested Folder does not exist.')
         messages.warning(request,message=msg)
@@ -243,13 +270,14 @@ def upload(request):
     # SESSION (used for flash-uploading)
     session_key = request.COOKIES.get(settings.SESSION_COOKIE_NAME, None)
     
-    return render_to_response('filebrowser/upload.html', {
+    return render_to_response(_template() + 'upload.html', {
         'query': query,
         'title': _(u'Select files to upload'),
         'settings_var': get_settings_var(),
         'session_key': session_key,
         'breadcrumbs': get_breadcrumbs(query, path),
-        'breadcrumbs_title': _(u'Upload')
+        'breadcrumbs_title': _(u'Upload'),
+        'is_popup': is_popup
     }, context_instance=Context(request))
 upload = staff_member_required(never_cache(upload))
 
@@ -260,9 +288,8 @@ def _check_file(request):
     """
     Check if file already exists on the server.
     """
-    
-    from django.utils import simplejson
-    
+
+    import json
     folder = request.POST.get('folder')
     fb_uploadurl_re = re.compile(r'^.*(%s)' % reverse("fb_upload"))
     folder = fb_uploadurl_re.sub('', folder)
@@ -275,7 +302,7 @@ def _check_file(request):
                 if os.path.isfile(smart_str(_check_access(request, folder, v))):
                     fileArray[k] = v
     
-    return HttpResponse(simplejson.dumps(fileArray))
+    return HttpResponse(json.dumps(fileArray))
 
 
 # upload signals
@@ -408,6 +435,12 @@ def rename(request):
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
+
+    if 'pop' in query:
+        is_popup = True
+    else:
+        is_popup = False
+
     filename = get_file(query.get('dir', ''), query.get('filename', ''))
     if path is None or filename is None:
         if path is None:
@@ -449,14 +482,15 @@ def rename(request):
     else:
         form = RenameForm(abs_path, file_extension)
     
-    return render_to_response('filebrowser/rename.html', {
+    return render_to_response(_template() + 'rename.html', {
         'form': form,
         'query': query,
         'file_extension': file_extension,
         'title': _(u'Rename "%s"') % filename,
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
-        'breadcrumbs_title': _(u'Rename')
+        'breadcrumbs_title': _(u'Rename'),
+        'is_popup': is_popup
     }, context_instance=Context(request))
 rename = staff_member_required(never_cache(rename))
 
@@ -469,6 +503,12 @@ def versions(request):
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
+
+    if 'pop' in query:
+        is_popup = True
+    else:
+        is_popup = False
+
     filename = get_file(query.get('dir', ''), query.get('filename', ''))
     if path is None or filename is None:
         if path is None:
@@ -479,13 +519,14 @@ def versions(request):
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = _check_access(request, path)
     
-    return render_to_response('filebrowser/versions.html', {
+    return render_to_response(_template() + 'versions.html', {
         'original': path_to_url(os.path.join(fb_settings.DIRECTORY, path, filename)),
         'query': query,
         'title': _(u'Versions for "%s"') % filename,
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
-        'breadcrumbs_title': _(u'Versions for "%s"') % filename
+        'breadcrumbs_title': _(u'Versions for "%s"') % filename,
+        'is_popup': is_popup
     }, context_instance=Context(request))
 versions = staff_member_required(never_cache(versions))
 

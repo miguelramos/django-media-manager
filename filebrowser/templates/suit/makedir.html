@@ -1,0 +1,52 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_list admin_urls %}
+{% load fb_tags fb_csrf %}
+{% load url from future %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}css/suit-filebrowser.css" />
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% include "suit/include/breadcrumbs.html" %}
+{% endblock %}
+
+{% block content %}
+    <div id="content-main" class="inner-two-columns">
+        <form action="{% query_string '' 'p' %}" method="post" class="form-horizontal">
+            {% fb_csrf_token %}
+            <div class="inner-right-column">
+                <div class="box save-box">
+                    <div class="submit-row clearfix">
+                        <input type="submit" value="{% trans 'Submit' %}" class="btn btn-high btn-info" />
+                    </div>
+                </div>
+            </div>
+            <div class="inner-center-column">
+                <div class="tab-content tab-content-main">
+                    {% if form.errors %}
+                        <div class="alert alert-error">
+                            <strong>{% trans 'Please correct the following errors.' %}</strong>
+                        </div>
+                    {% endif %}
+                    <fieldset class="module aligned">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <label class="required" for="id_dir_name">{{ form.dir_name.label }}</label>
+                            </div>
+                            <div class="controls">
+                                {{ form.dir_name }}
+                                {% if form.dir_name.errors %}<span class="help-inline">{{ form.dir_name.errors }}</span>{% endif %}
+                                <span class="help-block">
+                                    {{ form.dir_name.help_text|safe }}
+                                    {% if settings_var.CONVERT_FILENAME %}<br />{% trans "The Name will be converted to lowercase. Spaces will be replaced with underscores." %}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

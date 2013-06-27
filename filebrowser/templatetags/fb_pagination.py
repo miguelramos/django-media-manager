@@ -1,14 +1,21 @@
 # coding: utf-8
-
-from django.utils.html import escape
-from django.utils.safestring import mark_safe
 from django.template import Library
+
+from filebrowser.conf import fb_settings
 
 register = Library()
 
 DOT = '.'
 
-@register.inclusion_tag('filebrowser/include/paginator.html', takes_context=True)
+def _template():
+    if fb_settings.SUIT_TEMPLATE:
+        path = 'suit/'
+    else:
+        path = 'filebrowser/'
+
+    return path
+
+@register.inclusion_tag(_template() + 'include/paginator.html', takes_context=True)
 def pagination(context):
     page_num = context['page'].number-1
     paginator = context['p']

@@ -1,10 +1,8 @@
 # coding: utf-8
 
 # django imports
-from django.contrib.sessions.models import Session
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from django.template import RequestContext
 from django.conf import settings
 
 

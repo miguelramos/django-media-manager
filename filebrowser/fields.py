@@ -15,7 +15,17 @@ from django.utils.translation import ugettext_lazy as _
 # filebrowser imports
 from filebrowser.settings import *
 from filebrowser.base import FileObject
+from filebrowser.conf import fb_settings
 from filebrowser.functions import url_to_path
+
+
+def _template():
+    if fb_settings.SUIT_TEMPLATE:
+        path = 'suit/'
+    else:
+        path = 'filebrowser/'
+
+    return path
 
 
 class FileBrowseWidget(Input):
@@ -48,7 +58,7 @@ class FileBrowseWidget(Input):
                 final_attrs['directory'] = os.path.split(value.path_relative_directory)[0]
             except:
                 pass
-        return render_to_string("filebrowser/custom_field.html", locals())
+        return render_to_string(_template() + "custom_field.html", locals())
 
 
 class FileBrowseFormField(forms.CharField):
@@ -86,7 +96,7 @@ class FileBrowseField(Field):
         self.directory = kwargs.pop('directory', '')
         self.extensions = kwargs.pop('extensions', '')
         self.format = kwargs.pop('format', '')
-        return super(FileBrowseField, self).__init__(*args, **kwargs)
+        super(FileBrowseField, self).__init__(*args, **kwargs)
     
     def to_python(self, value):
         if not value or isinstance(value, FileObject):
@@ -97,8 +107,7 @@ class FileBrowseField(Field):
         if value is None:
             return None
         return unicode(value)
-        
-    
+
     def get_manipulator_field_objs(self):
         return [oldforms.TextField]
     
