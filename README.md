@@ -1,9 +1,14 @@
+# Changelog
+It is now possible to integrate with django-suit, django-suit-ckeditor and django-suit-redactor. 
+
+Soon i will put more info.
+
 # Installation
 
 This text was copied from "the django-filebrowser project on [Google Code](http://django-filebrowser.googlecode.com/svn-history/r338/wiki/installationbasic.wiki) and updated for this readme markup and the django-media-manager version.
 
 ## Basic Installation
-<code>pip install django-media-manager</code>
+<code>pip install https://github.com/miguelramos/django-media-manager/archive/master.zip</code>
 
 ## Install the FileBrowser
 
