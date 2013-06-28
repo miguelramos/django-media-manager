@@ -1,4 +1,7 @@
 # Changelog
+
+### 28-06-2013
+
 *	Support for django-suit
 *	Support for django-suit-ckeditor
 *	Support for django-suit-redactor
@@ -7,12 +10,15 @@
 
 ## Basic Installation
 
-<code>pip install https://github.com/miguelramos/django-media-manager/archive/master.zip</code>
+	pip install django-media-manager
+	or
+	pip install https://github.com/miguelramos/django-media-manager/archive/master.zip
 
 *	Add filebrowser to INSTALLED_APPS.
 *	Add the following line _before_ the admin URLS:
 *		(r'^admin/filebrowser/', include('filebrowser.urls'))
-* Collect static files
+*	Collect static files
+*	Add __uploads/__ folder to media folder or customize this setting
 
 ## Suit support
 The application have support for [django-suit](https://github.com/darklow/django-suit) template. To use it add on your settings files the following config:
