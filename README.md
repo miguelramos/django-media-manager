@@ -135,10 +135,9 @@ That's it you are now ready to send all kind of files to ckeditor or redactor.
 Please this is a work in progress. If you have ideas or want to make it better please fel free to pull requests.
 
 *	Better uploader, now using uploadify (some flash elements)
-*	Pass args from popup to main window are done thru attributes on textarea (redactor)
 *	Add more options on thumbs sizes
 
 ### More Info
 
-You can find the original documentation of django-filebrowser and all settings in [Google Code repo](http://django-filebrowser.googlecode.com/svn-history/r338/wiki/installationbasic.wiki).
+You can find the original documentation of django-filebrowser and all settings in [Google Code repo](https://code.google.com/p/django-filebrowser/w/list).
 
