@@ -17,46 +17,46 @@
  *    @description: Redactor suit editor.
  */
 if (typeof RedactorPlugins === 'undefined') var RedactorPlugins = {};
+if (typeof RedactorObject === 'undefined') var RedactorObject = {};
 
 RedactorPlugins.filebrowser = {
     init: function()
     {
-        console.log(this);
-
         this.addBtn('browser', 'File Browser', $.proxy(this.activeBrowser, this));
     },
     activeBrowser: function(){
-        FileBrowser.show(this.$el.attr('id'), '/admin/filebrowser/browse?pop=4&Redactor='+this.$el.attr('id'),
-            $.proxy(this.observerPop, this));
-    },
-    observerPop: function(ev){
-        var tag;
+        var win = window.open(
+            '/admin/filebrowser/browse?pop=4&Redactor='+this.$el.attr('id'),
+            'File Browser',
+            'height=600,width=960,resizable=yes,scrollbars=yes'
+        );
 
-        if(this.$el.attr('type') == "Image"){
-            tag = '<img src="'+this.$el.attr('file')+'">';
-            this.insertHtml(tag);
-        } else {
-            tag = '<a href="'+this.$el.attr('file')+'">'+this.$el.attr('type')+'</a>';
-            this.insertHtml(tag);
-        }
+        RedactorObject = this;
     }
 };
 
-function SuitSubmit(FileURL, ThumbURL, FileType) {
-    var data = {
-        'file': FileURL,
-        'thumb': ThumbURL,
-        'type': FileType
+if(window.opener){
+    window.onload = function() {
+
+        $('button[name="redactor-select"]').on('click', $.proxy(function(e){
+
+            var target = $(e.target);
+            var tag;
+
+            if(target.data('type')){
+                if(target.data('type') == 'Image'){
+                    tag = '<img src="'+target.data('file')+'">';
+                    this.insertHtml(tag);
+                    window.close();
+                } else if(target.data('type') == 'Document'){
+                    tag = '<a href="'+target.data('File')+'">'+target.data('type')+'</a>';
+                    this.insertHtml(tag);
+                    window.close();
+                }
+            }
+        }, window.opener.RedactorObject));
+
     };
-
-    var id = "#"+GetURLParameter('Redactor');
-
-    $(id, opener.window.document).attr('file', FileURL);
-    $(id, opener.window.document).attr('thumb', ThumbURL);
-    $(id, opener.window.document).attr('type', FileType);
-    //window.opener.$(id).attr('file', FileURL);
-    //window.opener.RedactorPlugins.filebrowser.data = data;
-    this.close();
 }
 
 function GetURLParameter(sParam){

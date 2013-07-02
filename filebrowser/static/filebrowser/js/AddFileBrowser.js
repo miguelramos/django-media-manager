@@ -4,7 +4,6 @@ var FileBrowser = {
     // change this
     thumb_prefix: 'thumb_',
     no_thumb: 'filebrowser/img/no_thumb.gif',
-    
     init: function() {
         // Deduce admin_media_prefix by looking at the <script>s in the
         // current document and finding the URL of *this* module.
@@ -22,7 +21,9 @@ var FileBrowser = {
         // var id2=String(id).split(".").join("___");
         var id2=String(id).replace(/\-/g,"____").split(".").join("___");
         FBWindow = window.open(href, String(id2), 'height=600,width=960,resizable=yes,scrollbars=yes');
+        FBWindow.sendClose = false;
         FBWindow.focus();
+
         if (close_func) {
             FBWindow.onbeforeunload = close_func;
         }

@@ -1,1 +1,3 @@
 *.pyc
+dist/
+django_media_manager.egg-info/

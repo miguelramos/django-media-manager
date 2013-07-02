@@ -44,7 +44,8 @@
             <td class="fb_icon">
                 {% selectable file.filetype query.type %}
                 {% if selectable %}
-                    <button class="btn btn-success" onclick="SuitSubmit('{{ file.url_save }}', '{{ file.url_thumbnail }}', '{{ file.filetype }}');">{% trans "Select" %}</button>
+                    <!--<button class="btn btn-success" name="redactor-select" onclick="RedactorSubmit('{{ file.url_save }}', '{{ file.url_thumbnail }}', '{{ file.filetype }}');">{% trans "Select" %}</button>-->
+                    <button class="btn btn-success" name="redactor-select" data-file="{{ file.url_save }}" data-thumb="{{ file.url_thumbnail }}" data-type="{{ file.filetype }}">{% trans "Select" %}</button>
                 {% else %}
                     &nbsp;
                 {% endif %}

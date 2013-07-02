@@ -1,5 +1,9 @@
 # Changelog
 
+### 02-07-2013
+*	Refactor and resolved an issue on window.opener event.
+*	Refactor FB_Redactor plugin.
+
 ### 28-06-2013
 
 *	Support for django-suit
