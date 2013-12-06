@@ -1,0 +1,1 @@
+mkdir -p media/static/ media/uploads/ static/ db/ logs/

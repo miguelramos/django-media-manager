@@ -1,0 +1,22 @@
+syntax: regexp
+\.pyc$
+\.hgignore~
+\.gitignore~
+\.git/
+\.tox/
+\.travis\.yml~
+
+^MANIFEST\.in~
+^tmp/
+\.zip
+^example/media/
+^example/db/
+^example/tmp/
+^example/logs/
+^example/static/
+^example/example/local_settings.py
+^builddocs/
+^builddocs.zip
+^build/
+^dist/
+^django_media_manager\.egg-info
