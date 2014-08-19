@@ -15,7 +15,7 @@ class CsrfTokenNode(Node):
             if csrf_token == 'NOTPROVIDED':
                 return mark_safe(u"")
             else:
-                return mark_safe(u"<div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='%s' /></div>" % (csrf_token))
+                return mark_safe(u"<div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='{0}' /></div>".format(csrf_token))
         else:
             # It's very probable that the token is missing because of
             # misconfiguration, so we raise a warning

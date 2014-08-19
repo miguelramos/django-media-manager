@@ -41,7 +41,7 @@ filter_re = []
 for exp in EXCLUDE:
    filter_re.append(re.compile(exp))
 for k,v in VERSIONS.iteritems():
-    exp = (r'_%s.(%s)') % (k, '|'.join(EXTENSION_LIST))
+    exp = (r'_{0}.({1})').format(k, '|'.join(EXTENSION_LIST))
     filter_re.append(re.compile(exp))
 
 def _check_access(request, *path):
@@ -218,7 +218,7 @@ def mkdir(request):
                 # POST CREATE SIGNAL
                 filebrowser_post_createdir.send(sender=request, path=path, dirname=_new_dir_name)
                 # MESSAGE & REDIRECT
-                msg = _('The Folder %s was successfully created.') % (_new_dir_name)
+                msg = _('The Folder {0} was successfully created.').format(_new_dir_name)
                 messages.success(request,message=msg)
                 # on redirect, sort by date desc to see the new directory on top of the list
                 # remove filter in order to actually _see_ the new folder
@@ -291,7 +291,7 @@ def _check_file(request):
 
     import json
     folder = request.POST.get('folder')
-    fb_uploadurl_re = re.compile(r'^.*(%s)' % reverse("fb_upload"))
+    fb_uploadurl_re = re.compile(r'^.*({0})'.format(reverse("fb_upload")))
     folder = fb_uploadurl_re.sub('', folder)
     
     fileArray = {}
@@ -321,7 +321,7 @@ def _upload_file(request):
     
     if request.method == 'POST':
         folder = request.POST.get('folder')
-        fb_uploadurl_re = re.compile(r'^.*(%s)' % reverse("fb_upload"))
+        fb_uploadurl_re = re.compile(r'^.*({0})'.format(reverse("fb_upload")))
         folder = fb_uploadurl_re.sub('', folder)
         abs_path = _check_access(request, folder)
         if request.FILES:
@@ -387,7 +387,7 @@ def delete(request):
                 # POST DELETE SIGNAL
                 filebrowser_post_delete.send(sender=request, path=path, filename=filename)
                 # MESSAGE & REDIRECT
-                msg = _('The file %s was successfully deleted.') % (filename.lower())
+                msg = _('The file {0} was successfully deleted.').format(filename.lower())
                 messages.success(request,message=msg)
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename,filetype")
                 return HttpResponseRedirect(redirect_url)
@@ -403,7 +403,7 @@ def delete(request):
                 # POST DELETE SIGNAL
                 filebrowser_post_delete.send(sender=request, path=path, filename=filename)
                 # MESSAGE & REDIRECT
-                msg = _('The folder %s was successfully deleted.') % (filename.lower())
+                msg = _('The folder {0} was successfully deleted.').format(filename.lower())
                 messages.success(request,message=msg)
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename,filetype")
                 return HttpResponseRedirect(redirect_url)
@@ -486,7 +486,7 @@ def rename(request):
         'form': form,
         'query': query,
         'file_extension': file_extension,
-        'title': _(u'Rename "%s"') % filename,
+        'title': _(u'Rename "{0}"').format(filename),
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
         'breadcrumbs_title': _(u'Rename'),
@@ -522,10 +522,10 @@ def versions(request):
     return render_to_response(_template() + 'versions.html', {
         'original': path_to_url(os.path.join(fb_settings.DIRECTORY, path, filename)),
         'query': query,
-        'title': _(u'Versions for "%s"') % filename,
+        'title': _(u'Versions for "{0}"').format(filename),
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
-        'breadcrumbs_title': _(u'Versions for "%s"') % filename,
+        'breadcrumbs_title': _(u'Versions for "{0}"').format(filename),
         'is_popup': is_popup
     }, context_instance=Context(request))
 versions = staff_member_required(never_cache(versions))

@@ -67,9 +67,9 @@ def version(parser, token):
     try:
         tag, src, version_prefix = token.split_contents()
     except:
-        raise TemplateSyntaxError, "%s tag requires 2 arguments" % token.contents.split()[0]
+        raise TemplateSyntaxError, "{0} tag requires 2 arguments".format(token.contents.split()[0])
     if (version_prefix[0] == version_prefix[-1] and version_prefix[0] in ('"', "'")) and version_prefix.lower()[1:-1] not in VERSIONS:
-        raise TemplateSyntaxError, "%s tag received bad version_prefix %s" % (tag, version_prefix)
+        raise TemplateSyntaxError, "{0} tag received bad version_prefix {1}".format(tag, version_prefix)
     return VersionNode(src, version_prefix)
 
 
@@ -127,13 +127,13 @@ def version_object(parser, token):
         #tag, src, version_prefix = token.split_contents()
         tag, arg = token.contents.split(None, 1)
     except:
-        raise TemplateSyntaxError, "%s tag requires arguments" % token.contents.split()[0]
+        raise TemplateSyntaxError, "{0} tag requires arguments".format(token.contents.split()[0])
     m = re.search(r'(.*?) (.*?) as (\w+)', arg)
     if not m:
-        raise TemplateSyntaxError, "%r tag had invalid arguments" % tag
+        raise TemplateSyntaxError, "{0} tag had invalid arguments".format(tag)
     src, version_prefix, var_name = m.groups()
     if (version_prefix[0] == version_prefix[-1] and version_prefix[0] in ('"', "'")) and version_prefix.lower()[1:-1] not in VERSIONS:
-        raise TemplateSyntaxError, "%s tag received bad version_prefix %s" % (tag, version_prefix)
+        raise TemplateSyntaxError, "{0} tag received bad version_prefix {1}".format(tag, version_prefix)
     return VersionObjectNode(src, version_prefix, var_name)
 
 
@@ -165,9 +165,9 @@ def version_setting(parser, token):
     try:
         tag, version_prefix = token.split_contents()
     except:
-        raise TemplateSyntaxError, "%s tag requires 1 argument" % token.contents.split()[0]
+        raise TemplateSyntaxError, "{0} tag requires 1 argument".format(token.contents.split()[0])
     if (version_prefix[0] == version_prefix[-1] and version_prefix[0] in ('"', "'")) and version_prefix.lower()[1:-1] not in VERSIONS:
-        raise TemplateSyntaxError, "%s tag received bad version_prefix %s" % (tag, version_prefix)
+        raise TemplateSyntaxError, "{0} tag received bad version_prefix {1}".format(tag, version_prefix)
     return VersionSettingNode(version_prefix)
 
 

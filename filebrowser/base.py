@@ -70,7 +70,7 @@ class FileObject(object):
         """
         Extension.
         """
-        return u"%s" % os.path.splitext(self.filename)[1]
+        return u"{0}".format(os.path.splitext(self.filename)[1])
     extension = property(_extension)
     
     def _filetype_checked(self):
@@ -97,9 +97,9 @@ class FileObject(object):
         """
         Path relative to initial directory.
         """
-        directory_re = re.compile(r'^(%s)' % (fb_settings.DIRECTORY))
+        directory_re = re.compile(r'^({0})'.format((fb_settings.DIRECTORY)))
         value = directory_re.sub('', self.path)
-        return u"%s" % value
+        return u"{0}".format(value)
     path_relative_directory = property(_path_relative_directory)
     
     def _url_relative(self):
@@ -128,18 +128,18 @@ class FileObject(object):
         Thumbnail URL.
         """
         if self.filetype == "Image":
-            return u"%s" % url_join(fb_settings.MEDIA_URL, get_version_path(self.path, ADMIN_THUMBNAIL))
+            return u"{0}".format(url_join(fb_settings.MEDIA_URL, get_version_path(self.path, ADMIN_THUMBNAIL)))
         else:
             return ""
     url_thumbnail = property(_url_thumbnail)
     
     def url_admin(self):
         if self.filetype_checked == "Folder":
-            directory_re = re.compile(r'^(%s)' % (fb_settings.DIRECTORY))
+            directory_re = re.compile(r'^({0})'.format((fb_settings.DIRECTORY)))
             value = directory_re.sub('', self.path)
-            return u"%s" % value
+            return u"{0}".format(value)
         else:
-            return u"%s" % url_join(fb_settings.MEDIA_URL, self.path)
+            return u"{0}".format(url_join(fb_settings.MEDIA_URL, self.path))
     
     def _dimensions(self):
         """
