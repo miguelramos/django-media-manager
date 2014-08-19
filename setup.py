@@ -21,6 +21,6 @@ setup(
     ],
     install_requires = [
         "Django>=1.5",
-        "PIL",
+        "pillow",
     ],
 )
