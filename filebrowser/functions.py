@@ -3,7 +3,7 @@
 # imports
 import os, re, decimal
 from time import gmtime, strftime, localtime, mktime, time
-from urlparse import urlparse
+# from urllib import parse
 
 # django imports
 from django.utils.translation import ugettext as _
@@ -251,7 +251,7 @@ def get_file_type(filename):
     
     file_extension = os.path.splitext(filename)[1].lower()
     file_type = ''
-    for k,v in EXTENSIONS.iteritems():
+    for k,v in EXTENSIONS.items():
         for extension in v:
             if file_extension == extension.lower():
                 file_type = k
@@ -265,7 +265,7 @@ def is_selectable(filename, selecttype):
     
     file_extension = os.path.splitext(filename)[1].lower()
     select_types = []
-    for k,v in SELECT_FORMATS.iteritems():
+    for k,v in SELECT_FORMATS.items():
         for extension in v:
             if file_extension == extension.lower():
                 select_types.append(k)
@@ -296,7 +296,7 @@ def version_generator(value, version_prefix, force=None):
         version_dir = os.path.split(absolute_version_path)[0]
         if not os.path.isdir(version_dir):
             os.makedirs(version_dir)
-            os.chmod(version_dir, 0775)
+            os.chmod(version_dir, 0o775)
         version = scale_and_crop(im, VERSIONS[version_prefix]['width'], VERSIONS[version_prefix]['height'], VERSIONS[version_prefix]['opts'])
         try:
             version.save(absolute_version_path, quality=90, optimize=(os.path.splitext(version_path)[1].lower() != '.gif'))
