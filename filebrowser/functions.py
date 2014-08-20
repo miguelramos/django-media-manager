@@ -1,7 +1,7 @@
 # coding: utf-8
 
 # imports
-import os, re, decimal
+import os, re, decimal, itertools
 from time import gmtime, strftime, localtime, mktime, time
 # from urllib import parse
 
@@ -120,9 +120,15 @@ def sort_by_attr(seq, attr):
     # (seq[i].attr, i, seq[i]) and sort it. The second item of tuple is needed not
     # only to provide stable sorting, but mainly to eliminate comparison of objects
     # (which can be expensive or prohibited) in case of equal attribute values.
-    intermed = map(None, map(getattr, seq, (attr,)*len(seq)), range(len(seq)), seq)
-    intermed.sort()
-    return map(operator.getitem, intermed, (-1,) * len(intermed))
+    intermed = map(None, map(getattr, seq, (attr,)*len(seq)), itertools.zip_longest(range(len(seq)), seq))
+    # intermed.sort()
+    try:
+        intermed = sorted(intermed)
+        # does this actually DO anything?
+        print(intermed)
+        return list(map(operator.getitem, intermed, (-1,) * len(intermed)))
+    except TypeError:
+        return seq
 
 
 def url_join(*args):

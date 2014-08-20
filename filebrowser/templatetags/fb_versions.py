@@ -7,7 +7,7 @@ from time import gmtime
 # django imports
 from django.template import Library, Node, Variable, VariableDoesNotExist, TemplateSyntaxError
 from django.conf import settings
-from django.utils.encoding import force_unicode, smart_str
+from django.utils.encoding import smart_str
 
 # filebrowser imports
 from filebrowser.settings import VERSIONS
@@ -40,7 +40,6 @@ class VersionNode(Node):
             except VariableDoesNotExist:
                 return None
         try:
-            source = force_unicode(source)
             version_path = get_version_path(url_to_path(source), version_prefix)
             if not os.path.isfile(smart_str(os.path.join(fb_settings.MEDIA_ROOT, version_path))):
                 # create version
@@ -96,7 +95,6 @@ class VersionObjectNode(Node):
             except VariableDoesNotExist:
                 return None
         try:
-            source = force_unicode(source)
             version_path = get_version_path(url_to_path(source), version_prefix)
             if not os.path.isfile(smart_str(os.path.join(fb_settings.MEDIA_ROOT, version_path))):
                 # create version
