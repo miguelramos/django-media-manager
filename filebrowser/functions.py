@@ -120,7 +120,7 @@ def sort_by_attr(seq, attr):
     # (seq[i].attr, i, seq[i]) and sort it. The second item of tuple is needed not
     # only to provide stable sorting, but mainly to eliminate comparison of objects
     # (which can be expensive or prohibited) in case of equal attribute values.
-    intermed = map(None, map(getattr, seq, (attr,)*len(seq)), xrange(len(seq)), seq)
+    intermed = map(None, map(getattr, seq, (attr,)*len(seq)), range(len(seq)), seq)
     intermed.sort()
     return map(operator.getitem, intermed, (-1,) * len(intermed))
 
