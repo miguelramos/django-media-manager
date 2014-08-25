@@ -40,6 +40,11 @@
         <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_Redactor.js"></script>
     {% endifequal %}
 
+    {% ifequal query.pop '5' %}
+        <!-- Six Foot Chirping Malachite Sunbird -->
+        <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_Sixfoot.js"></script>
+    {% endifequal %}
+
     {{ media }}
 {% endblock %}
 
