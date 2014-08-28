@@ -11,7 +11,6 @@ from django.conf import settings
 from filebrowser.settings import *
 from filebrowser.conf import fb_settings
 from filebrowser.functions import get_file_type, url_join, is_selectable, get_version_path
-from django.utils.encoding import force_unicode
 
 # PIL import
 if STRICT_PIL:
@@ -44,7 +43,7 @@ class FileObject(object):
         """
         Filesize.
         """
-        path = force_unicode(self.path)
+        path = (self.path)
         if os.path.isfile(os.path.join(fb_settings.MEDIA_ROOT, path)) or os.path.isdir(os.path.join(fb_settings.MEDIA_ROOT, path)):
             return os.path.getsize(os.path.join(fb_settings.MEDIA_ROOT, path))
         return ""
@@ -70,7 +69,7 @@ class FileObject(object):
         """
         Extension.
         """
-        return u"%s" % os.path.splitext(self.filename)[1]
+        return u"{0}".format(os.path.splitext(self.filename)[1])
     extension = property(_extension)
     
     def _filetype_checked(self):
@@ -97,9 +96,9 @@ class FileObject(object):
         """
         Path relative to initial directory.
         """
-        directory_re = re.compile(r'^(%s)' % (fb_settings.DIRECTORY))
+        directory_re = re.compile(r'^({0})'.format((fb_settings.DIRECTORY)))
         value = directory_re.sub('', self.path)
-        return u"%s" % value
+        return u"{0}".format(value)
     path_relative_directory = property(_path_relative_directory)
     
     def _url_relative(self):
@@ -110,7 +109,7 @@ class FileObject(object):
         """
         Full URL including MEDIA_URL.
         """
-        return force_unicode(url_join(fb_settings.MEDIA_URL, self.url_rel))
+        return (url_join(fb_settings.MEDIA_URL, self.url_rel))
     url_full = property(_url_full)
     
     def _url_save(self):
@@ -128,18 +127,18 @@ class FileObject(object):
         Thumbnail URL.
         """
         if self.filetype == "Image":
-            return u"%s" % url_join(fb_settings.MEDIA_URL, get_version_path(self.path, ADMIN_THUMBNAIL))
+            return u"{0}".format(url_join(fb_settings.MEDIA_URL, get_version_path(self.path, ADMIN_THUMBNAIL)))
         else:
             return ""
     url_thumbnail = property(_url_thumbnail)
     
     def url_admin(self):
         if self.filetype_checked == "Folder":
-            directory_re = re.compile(r'^(%s)' % (fb_settings.DIRECTORY))
+            directory_re = re.compile(r'^({0})'.format((fb_settings.DIRECTORY)))
             value = directory_re.sub('', self.path)
-            return u"%s" % value
+            return u"{0}".format(value)
         else:
-            return u"%s" % url_join(fb_settings.MEDIA_URL, self.path)
+            return u"{0}".format(url_join(fb_settings.MEDIA_URL, self.path))
     
     def _dimensions(self):
         """
@@ -196,12 +195,12 @@ class FileObject(object):
     is_empty = property(_is_empty)
     
     def __repr__(self):
-        return force_unicode(self.url_save)
+        return (self.url_save)
     
     def __str__(self):
-        return force_unicode(self.url_save)
+        return (self.url_save)
     
     def __unicode__(self):
-        return force_unicode(self.url_save)
+        return (self.url_save)
 
 

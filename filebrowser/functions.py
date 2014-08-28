@@ -1,9 +1,9 @@
 # coding: utf-8
 
 # imports
-import os, re, decimal
+import os, re, decimal, itertools
 from time import gmtime, strftime, localtime, mktime, time
-from urlparse import urlparse
+# from urllib import parse
 
 # django imports
 from django.utils.translation import ugettext as _
@@ -34,7 +34,7 @@ def url_to_path(value):
     Returns a PATH relative to MEDIA_ROOT.
     """
     
-    mediaurl_re = re.compile(r'^(%s)' % (fb_settings.MEDIA_URL))
+    mediaurl_re = re.compile(r'^({0})'.format(fb_settings.MEDIA_URL))
     value = mediaurl_re.sub('', value)
     return value
 
@@ -47,7 +47,7 @@ def path_to_url(value):
     Return an URL relative to MEDIA_ROOT.
     """
     
-    mediaroot_re = re.compile(r'^(%s)' % (fb_settings.MEDIA_ROOT))
+    mediaroot_re = re.compile(r'^({0})'.format(fb_settings.MEDIA_ROOT))
     value = mediaroot_re.sub('', value)
     return url_join(fb_settings.MEDIA_URL, value)
 
@@ -59,9 +59,9 @@ def dir_from_url(value):
     an URL relative to MEDIA_URL.
     """
     
-    mediaurl_re = re.compile(r'^(%s)' % (fb_settings.MEDIA_URL))
+    mediaurl_re = re.compile(r'^({0})'.format(fb_settings.MEDIA_URL))
     value = mediaurl_re.sub('', value)
-    directory_re = re.compile(r'^(%s)' % (fb_settings.DIRECTORY))
+    directory_re = re.compile(r'^({0})'.format(fb_settings.DIRECTORY))
     value = directory_re.sub('', value)
     return os.path.split(value)[0]
 
@@ -120,9 +120,15 @@ def sort_by_attr(seq, attr):
     # (seq[i].attr, i, seq[i]) and sort it. The second item of tuple is needed not
     # only to provide stable sorting, but mainly to eliminate comparison of objects
     # (which can be expensive or prohibited) in case of equal attribute values.
-    intermed = map(None, map(getattr, seq, (attr,)*len(seq)), xrange(len(seq)), seq)
-    intermed.sort()
-    return map(operator.getitem, intermed, (-1,) * len(intermed))
+    intermed = map(None, map(getattr, seq, (attr,)*len(seq)), itertools.zip_longest(range(len(seq)), seq))
+    # intermed.sort()
+    try:
+        intermed = sorted(intermed)
+        # does this actually DO anything?
+        print(intermed)
+        return list(map(operator.getitem, intermed, (-1,) * len(intermed)))
+    except TypeError:
+        return seq
 
 
 def url_join(*args):
@@ -251,7 +257,7 @@ def get_file_type(filename):
     
     file_extension = os.path.splitext(filename)[1].lower()
     file_type = ''
-    for k,v in EXTENSIONS.iteritems():
+    for k,v in EXTENSIONS.items():
         for extension in v:
             if file_extension == extension.lower():
                 file_type = k
@@ -265,7 +271,7 @@ def is_selectable(filename, selecttype):
     
     file_extension = os.path.splitext(filename)[1].lower()
     select_types = []
-    for k,v in SELECT_FORMATS.iteritems():
+    for k,v in SELECT_FORMATS.items():
         for extension in v:
             if file_extension == extension.lower():
                 select_types.append(k)
@@ -296,7 +302,7 @@ def version_generator(value, version_prefix, force=None):
         version_dir = os.path.split(absolute_version_path)[0]
         if not os.path.isdir(version_dir):
             os.makedirs(version_dir)
-            os.chmod(version_dir, 0775)
+            os.chmod(version_dir, 0o775)
         version = scale_and_crop(im, VERSIONS[version_prefix]['width'], VERSIONS[version_prefix]['height'], VERSIONS[version_prefix]['opts'])
         try:
             version.save(absolute_version_path, quality=90, optimize=(os.path.splitext(version_path)[1].lower() != '.gif'))

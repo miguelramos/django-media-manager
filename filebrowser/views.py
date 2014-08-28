@@ -40,8 +40,8 @@ from filebrowser.decorators import flash_login_required
 filter_re = []
 for exp in EXCLUDE:
    filter_re.append(re.compile(exp))
-for k,v in VERSIONS.iteritems():
-    exp = (r'_%s.(%s)') % (k, '|'.join(EXTENSION_LIST))
+for k,v in VERSIONS.items():
+    exp = (r'_{0}.({1})').format(k, '|'.join(EXTENSION_LIST))
     filter_re.append(re.compile(exp))
 
 def _check_access(request, *path):
@@ -86,14 +86,14 @@ def browse(request):
         messages.warning(request,message=msg)
         if directory is None:
             # The DIRECTORY does not exist, raise an error to prevent eternal redirecting.
-            raise ImproperlyConfigured, _("Error finding Upload-Folder. Maybe it does not exist?")
+            raise ImproperlyConfigured(_("Error finding Upload-Folder. Maybe it does not exist?"))
         redirect_url = reverse("fb_browse") + query_helper(query, "", "dir")
         return HttpResponseRedirect(redirect_url)
     
     # INITIAL VARIABLES
     results_var = {'results_total': 0, 'results_current': 0, 'delete_total': 0, 'images_total': 0, 'select_total': 0 }
     counter = {}
-    for k,v in EXTENSIONS.iteritems():
+    for k,v in EXTENSIONS.items():
         counter[k] = 0
     
     dir_list = os.listdir(abs_path)
@@ -213,20 +213,21 @@ def mkdir(request):
                 # PRE CREATE SIGNAL
                 filebrowser_pre_createdir.send(sender=request, path=path, dirname=_new_dir_name)
                 # CREATE FOLDER
+                print(server_path)
                 os.mkdir(server_path)
-                os.chmod(server_path, 0775)
+                os.chmod(server_path, 0o775)
                 # POST CREATE SIGNAL
                 filebrowser_post_createdir.send(sender=request, path=path, dirname=_new_dir_name)
                 # MESSAGE & REDIRECT
-                msg = _('The Folder %s was successfully created.') % (_new_dir_name)
+                msg = _('The Folder {0} was successfully created.').format(_new_dir_name)
                 messages.success(request,message=msg)
                 # on redirect, sort by date desc to see the new directory on top of the list
                 # remove filter in order to actually _see_ the new folder
                 # remove pagination
                 redirect_url = reverse("fb_browse") + query_helper(query, "ot=desc,o=date", "ot,o,filter_type,filter_date,q,p")
                 return HttpResponseRedirect(redirect_url)
-            except OSError, (errno, strerror):
-                if errno == 13:
+            except OSError as e:
+                if e.errno == 13:
                     form.errors['dir_name'] = forms.util.ErrorList([_('Permission denied.')])
                 else:
                     form.errors['dir_name'] = forms.util.ErrorList([_('Error creating folder.')])
@@ -291,7 +292,7 @@ def _check_file(request):
 
     import json
     folder = request.POST.get('folder')
-    fb_uploadurl_re = re.compile(r'^.*(%s)' % reverse("fb_upload"))
+    fb_uploadurl_re = re.compile(r'^.*({0})'.format(reverse("fb_upload")))
     folder = fb_uploadurl_re.sub('', folder)
     
     fileArray = {}
@@ -321,7 +322,7 @@ def _upload_file(request):
     
     if request.method == 'POST':
         folder = request.POST.get('folder')
-        fb_uploadurl_re = re.compile(r'^.*(%s)' % reverse("fb_upload"))
+        fb_uploadurl_re = re.compile(r'^.*({0})'.format(reverse("fb_upload")))
         folder = fb_uploadurl_re.sub('', folder)
         abs_path = _check_access(request, folder)
         if request.FILES:
@@ -387,11 +388,11 @@ def delete(request):
                 # POST DELETE SIGNAL
                 filebrowser_post_delete.send(sender=request, path=path, filename=filename)
                 # MESSAGE & REDIRECT
-                msg = _('The file %s was successfully deleted.') % (filename.lower())
+                msg = _('The file {0} was successfully deleted.').format(filename.lower())
                 messages.success(request,message=msg)
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename,filetype")
                 return HttpResponseRedirect(redirect_url)
-            except OSError, e:
+            except OSError as e:
                 # todo: define error message
                 msg = unicode(e)
         else:
@@ -403,11 +404,11 @@ def delete(request):
                 # POST DELETE SIGNAL
                 filebrowser_post_delete.send(sender=request, path=path, filename=filename)
                 # MESSAGE & REDIRECT
-                msg = _('The folder %s was successfully deleted.') % (filename.lower())
+                msg = _('The folder {0} was successfully deleted.').format(filename.lower())
                 messages.success(request,message=msg)
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename,filetype")
                 return HttpResponseRedirect(redirect_url)
-            except OSError, e:
+            except OSError as e:
                 # todo: define error message
                 msg = unicode(e)
 
@@ -477,7 +478,7 @@ def rename(request):
                 messages.success(request,message=msg)
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename")
                 return HttpResponseRedirect(redirect_url)
-            except OSError, (errno, strerror):
+            except OSError as e:
                 form.errors['name'] = forms.util.ErrorList([_('Error.')])
     else:
         form = RenameForm(abs_path, file_extension)
@@ -486,7 +487,7 @@ def rename(request):
         'form': form,
         'query': query,
         'file_extension': file_extension,
-        'title': _(u'Rename "%s"') % filename,
+        'title': _(u'Rename "{0}"').format(filename),
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
         'breadcrumbs_title': _(u'Rename'),
@@ -522,10 +523,10 @@ def versions(request):
     return render_to_response(_template() + 'versions.html', {
         'original': path_to_url(os.path.join(fb_settings.DIRECTORY, path, filename)),
         'query': query,
-        'title': _(u'Versions for "%s"') % filename,
+        'title': _(u'Versions for "{0}"').format(filename),
         'settings_var': get_settings_var(),
         'breadcrumbs': get_breadcrumbs(query, path),
-        'breadcrumbs_title': _(u'Versions for "%s"') % filename,
+        'breadcrumbs_title': _(u'Versions for "{0}"').format(filename),
         'is_popup': is_popup
     }, context_instance=Context(request))
 versions = staff_member_required(never_cache(versions))

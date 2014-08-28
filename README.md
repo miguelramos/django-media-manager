@@ -1,5 +1,10 @@
 # Changelog
 
+### 25-08-2014 v3.4.0
+*   Uses Pillow now.
+*   Python 3 only now.
+*   Integration with the Six Foot Chirping Malachite Sunbird working.
+
 ### 02-07-2013
 *	Refactor and resolved an issue on window.opener event.
 *	Refactor FB_Redactor plugin.
