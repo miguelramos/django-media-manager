@@ -1,3 +1,6 @@
+# Deprecated Fork
+This fork has now moved to https://bitbucket.org/6ft/django-media-manager which is maintained by the Six Foot team.
+
 # Changelog
 
 ### 25-08-2014 v3.4.0
