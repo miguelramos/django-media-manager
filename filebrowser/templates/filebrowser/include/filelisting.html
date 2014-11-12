@@ -20,7 +20,7 @@
             <td class="fb_icon">
                 {% selectable file.filetype query.type %}
                 {% if selectable %}
-                    <button class="button fb_selectlink" onclick="FileBrowserDialogue.fileSubmit('{{ file.url_save|escapejs }}');">{% trans "Select" %}</button>
+                    <button class="button fb_selectlink" onclick="FileBrowserDialogue.fileSubmit('{{ file.url_full|escapejs }}');">{% trans "Select" %}</button>
                 {% else %}
                     &nbsp;
                 {% endif %}
@@ -32,7 +32,7 @@
             <td class="fb_icon">
                 {% selectable file.filetype query.type %}
                 {% if selectable %}
-                    <button class="button fb_selectlink" onclick="OpenFile(ProtectPath('{{ file.url_save|escapejs }}'));return false;">{% trans "Select" %}</button>
+                    <button class="button fb_selectlink" onclick="OpenFile(ProtectPath('{{ file.url_full|escapejs }}'));return false;">{% trans "Select" %}</button>
                 {% else %}
                     &nbsp;
                 {% endif %}

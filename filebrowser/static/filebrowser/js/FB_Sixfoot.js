@@ -14,7 +14,6 @@ if(window.opener){
         }
 
         selectButtons = document.querySelectorAll('button[name="sixfoot-select"]');
-        console.log(selectButtons);
         for (i = selectButtons.length - 1; i >= 0; i--) {
             button = selectButtons[i];
 

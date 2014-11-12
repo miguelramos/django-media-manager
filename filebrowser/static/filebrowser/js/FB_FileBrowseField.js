@@ -2,13 +2,19 @@ function FileSubmit(FileURL, ThumbURL, FileType) {
     
     // var input_id=window.name.split("___").join(".");
     var input_id=window.name.replace(/____/g,'-').split("___").join(".");
-    var preview_id = 'image_' + input_id;
-    var link_id = 'link_' + input_id;
-    var help_id = 'help_' + input_id;
+    var preview_id = 'preview_' + input_id;
+    var previewimage_id = 'previewimage_' + input_id;
+    var link_id = 'previewlink_' + input_id;
+    var errorList;
+    // ignore help
+    // var help_id = 'help_' + input_id;
+    console.log('input_id: ' + input_id);
     input = opener.document.getElementById(input_id);
+    console.log(input);
     preview = opener.document.getElementById(preview_id);
+    previewImage = opener.document.getElementById(previewimage_id);
     link = opener.document.getElementById(link_id);
-    help = opener.document.getElementById(help_id);
+    // help = opener.document.getElementById(help_id);
     // set new value for input field
     input.value = FileURL;
     
@@ -18,14 +24,21 @@ function FileSubmit(FileURL, ThumbURL, FileType) {
         // link the preview-image to the original image
         link.setAttribute("href", FileURL);
         link.setAttribute("target", "_blank");
-        preview.setAttribute("src", ThumbURL);
-        help.setAttribute("style", "display:block");
+        preview.style.display = 'block';
+        previewImage.setAttribute("src", ThumbURL);
+        // clear out any errors.
+        errorList = preview.parentNode.querySelector('.errorlist');
+        if (errorList) {
+            errorList.style.display = 'none';
+        }
+        // help.setAttribute("style", "display:block");
     } else {
         // hide preview elements
         link.setAttribute("href", "");
         link.setAttribute("target", "");
-        preview.setAttribute("src", "");
-        help.setAttribute("style", "display:none");
+        preview.style.display = 'none';
+        previewImage.setAttribute("src", "");
+        // help.setAttribute("style", "display:none");
     }
     this.close();
 }

@@ -1,9 +1,16 @@
 # Changelog
 
+### 11-11-2014 v4.0.0
+*   BREAKS BACKWARDS COMPATIBILITY: Due to the default that files are stored with
+    relative filenames rather than absolute.
+*   Uploadify is deprecated; Uses qq uploader now.
+*   Still targeting Python 3 only.
+*   FileBrowseFields can now integrate with imagekit as it mimics an FileField 
+    interface now.
+
 ### 25-08-2014 v3.4.0
 *   Uses Pillow now.
 *   Python 3 only now.
-*   Integration with the Six Foot Chirping Malachite Sunbird working.
 
 ### 02-07-2013
 *	Refactor and resolved an issue on window.opener event.
@@ -21,7 +28,7 @@
 
 	pip install django-media-manager
 	or
-	pip install https://github.com/miguelramos/django-media-manager/archive/master.zip
+	pip install git+ssh://git@bitbucket.org:6ft/django-media-manager.git
 
 *	Add filebrowser to INSTALLED_APPS.
 *	Add the following line _before_ the admin URLS:
@@ -139,10 +146,6 @@ That's it you are now ready to send all kind of files to ckeditor or redactor.
 
 Please this is a work in progress. If you have ideas or want to make it better please fel free to pull requests.
 
-*	Better uploader, now using uploadify (some flash elements)
 *	Add more options on thumbs sizes
 
-### More Info
-
-You can find the original documentation of django-filebrowser and all settings in [Google Code repo](https://code.google.com/p/django-filebrowser/w/list).
 

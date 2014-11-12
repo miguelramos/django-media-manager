@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-media-manager',
-    version='3.4.0',
+    version='4.0.0',
     description='Media-Management with the Django Admin-Interface.',
-    author=['Patrick Kranzlmueller','Six Foot'],
+    author=['Patrick Kranzlmueller', 'Six Foot'],
     author_email='dev@6ft.com',
-    url='https://github.com/oliverseal/django-media-manager',
+    url='https://bitbucket.org/6ft/django-media-manager',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
@@ -19,7 +19,7 @@ setup(
         'Programming Language :: Python',
         'Framework :: Django',
     ],
-    install_requires = [
+    install_requires=[
         "Django>=1.5",
         "pillow",
     ],
