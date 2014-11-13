@@ -123,6 +123,10 @@ class FileObjectDescriptor(object):
         file = instance.__dict__[self.field.name]
         # print(file)
 
+        # if it's none, return none
+        if file is None or (isinstance(file, str) and len(file) == 0):
+            return instance.__dict__[self.field.name]
+
         # If this value is a string (instance.file = "path/to/file") or None
         # then we simply wrap it with the appropriate attribute class according
         # to the file field. [This is FieldFile for FileFields and
@@ -130,7 +134,7 @@ class FileObjectDescriptor(object):
         # subclasses might also want to subclass the attribute class]. This
         # object understands how to convert a path to a file, and also how to
         # handle None.
-        if isinstance(file, str) or file is None:
+        if isinstance(file, str) and file is not None:
             attr = self.field.attr_class(file, instance=instance, field=self.field)
             instance.__dict__[self.field.name] = attr
 

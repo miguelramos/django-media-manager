@@ -1,5 +1,8 @@
 # Changelog
 
+### 11-13-2014 v4.0.3
+*   Bug fix. Field now returns None or empty string if blank.
+
 ### 11-13-2014 v4.0.2
 *   Bug fix. Field should have had `self.file = None` when no file is assigned.
 
