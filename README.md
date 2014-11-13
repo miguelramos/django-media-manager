@@ -1,5 +1,8 @@
 # Changelog
 
+### 11-13-2014 v4.0.2
+*   Bug fix. Field should have had `self.file = None` when no file is assigned.
+
 ### 11-13-2014 v4.0.1
 *   Urls are now encoded properly so they can be output anywhere.
 *   `path` property of FileObject is still unencoded to ensure the filename is still available.

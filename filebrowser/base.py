@@ -25,6 +25,7 @@ else:
 
 
 class FileObject(File):
+    file = None
     """
     The FileObject represents a File on the Server.
 
@@ -56,6 +57,7 @@ class FileObject(File):
                 self.file = None
         except Exception as ex:
             print(ex)
+            self.file = None
             pass
 
     # Here in case of compatibility issues; See below;
