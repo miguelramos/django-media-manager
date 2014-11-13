@@ -186,6 +186,11 @@ class FileBrowseField(Field):
     def get_db_prep_value(self, value, connection, prepared=False):
         if value is None:
             return None
+        if isinstance(value, str):
+            if len(value) == 0:
+                return ''
+            else:
+                value = FileObject(value)
         return value.path
 
     def value_to_string(self, obj):

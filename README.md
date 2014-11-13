@@ -1,5 +1,8 @@
 # Changelog
 
+### 11-13-2014 v4.0.4
+*   Bug fix. If value on a FileBrowseField is blank, it's set to '' in the database.
+
 ### 11-13-2014 v4.0.3
 *   Bug fix. Field now returns None or empty string if blank.
 
