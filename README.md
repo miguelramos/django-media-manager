@@ -1,5 +1,9 @@
 # Changelog
 
+### 11-13-2014 v4.0.1
+*   Urls are now encoded properly so they can be output anywhere.
+*   `path` property of FileObject is still unencoded to ensure the filename is still available.
+
 ### 11-11-2014 v4.0.0
 *   BREAKS BACKWARDS COMPATIBILITY: Due to the default that files are stored with
     relative filenames rather than absolute.

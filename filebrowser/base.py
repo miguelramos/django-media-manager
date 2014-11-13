@@ -3,6 +3,7 @@
 # imports
 import os, re, datetime
 from time import gmtime, strftime
+from urllib.parse import quote
 
 # django imports
 from django.core.files.base import File
@@ -57,13 +58,15 @@ class FileObject(File):
             print(ex)
             pass
 
-    def __repr__(self):
-        return self.path
+    # Here in case of compatibility issues; See below;
+    # def __repr__(self):
+    #     return self.path
 
-    def __str__(self):
-        return self.path
+    # def __str__(self):
+    #     return self.path
 
-    def _filesize(self):
+    @property
+    def filesize(self):
         """
         Filesize.
         """
@@ -71,77 +74,76 @@ class FileObject(File):
         if os.path.isfile(os.path.join(fb_settings.MEDIA_ROOT, path)) or os.path.isdir(os.path.join(fb_settings.MEDIA_ROOT, path)):
             return os.path.getsize(os.path.join(fb_settings.MEDIA_ROOT, path))
         return ""
-    filesize = property(_filesize)
 
-    def _date(self):
+    @property
+    def date(self):
         """
         Date.
         """
         if os.path.isfile(os.path.join(fb_settings.MEDIA_ROOT, self.path)) or os.path.isdir(os.path.join(fb_settings.MEDIA_ROOT, self.path)):
             return os.path.getmtime(os.path.join(fb_settings.MEDIA_ROOT, self.path))
         return ""
-    date = property(_date)
 
-    def _datetime(self):
+    @property
+    def datetime(self):
         """
         Datetime Object.
         """
         return datetime.datetime.fromtimestamp(self.date)
-    datetime = property(_datetime)
 
-    def _extension(self):
+    @property
+    def extension(self):
         """
         Extension.
         """
-        return u"{0}".format(os.path.splitext(self.filename)[1])
-    extension = property(_extension)
+        return "{0}".format(os.path.splitext(self.filename)[1])
 
-    def _filetype_checked(self):
+    @property
+    def filetype_checked(self):
         if self.filetype == "Folder" and os.path.isdir(self.path_full):
             return self.filetype
         elif self.filetype != "Folder" and os.path.isfile(self.path_full):
             return self.filetype
         else:
             return ""
-    filetype_checked = property(_filetype_checked)
 
-    def _path_full(self):
+    @property
+    def path_full(self):
         """
         Full server PATH including MEDIA_ROOT.
         """
         return os.path.join(fb_settings.MEDIA_ROOT, self.path)
-    path_full = property(_path_full)
 
-    def _path_relative(self):
+    @property
+    def path_relative(self):
         return self.path
-    path_relative = property(_path_relative)
 
-    def _path_relative_directory(self):
+    @property
+    def path_relative_directory(self):
         """
         Path relative to initial directory.
         """
         directory_re = re.compile(r'^({0})'.format((fb_settings.DIRECTORY)))
         value = directory_re.sub('', self.path)
-        return u"{0}".format(value)
-    path_relative_directory = property(_path_relative_directory)
+        return "{0}".format(value)
 
-    def _url_relative(self):
+    @property
+    def url_relative(self):
         return self.url_rel
-    url_relative = property(_url_relative)
 
     @property
     def url_full(self):
         """
         Full URL including MEDIA_URL.
         """
-        return (url_join(fb_settings.MEDIA_URL, self.url_rel))
+        return quote(url_join(fb_settings.MEDIA_URL, self.url_rel), safe='/:')
 
     @property
     def url(self):
         """
         Full URL including MEDIA_URL.
         """
-        return (url_join(fb_settings.MEDIA_URL, self.url_rel))
+        return quote(url_join(fb_settings.MEDIA_URL, self.url_rel), safe='/:')
 
     @property
     def url_save(self):
@@ -153,25 +155,26 @@ class FileObject(File):
         else:
             return self.url_rel
 
-    def _url_thumbnail(self):
+    @property
+    def url_thumbnail(self):
         """
         Thumbnail URL.
         """
         if self.filetype == "Image":
-            return u"{0}".format(url_join(fb_settings.MEDIA_URL, get_version_path(self.path, ADMIN_THUMBNAIL)))
+            return "{0}".format(url_join(fb_settings.MEDIA_URL, get_version_path(self.path, ADMIN_THUMBNAIL)))
         else:
             return ""
-    url_thumbnail = property(_url_thumbnail)
 
     def url_admin(self):
         if self.filetype_checked == "Folder":
             directory_re = re.compile(r'^({0})'.format((fb_settings.DIRECTORY)))
             value = directory_re.sub('', self.path)
-            return u"{0}".format(value)
+            return "{0}".format(value)
         else:
-            return u"{0}".format(url_join(fb_settings.MEDIA_URL, self.path))
+            return "{0}".format(url_join(fb_settings.MEDIA_URL, self.path))
 
-    def _dimensions(self):
+    @property
+    def dimensions(self):
         """
         Image Dimensions.
         """
@@ -183,23 +186,23 @@ class FileObject(File):
                 pass
         else:
             return False
-    dimensions = property(_dimensions)
 
-    def _width(self):
+    @property
+    def width(self):
         """
         Image Width.
         """
         return self.dimensions[0]
-    width = property(_width)
 
-    def _height(self):
+    @property
+    def height(self):
         """
         Image Height.
         """
         return self.dimensions[1]
-    height = property(_height)
 
-    def _orientation(self):
+    @property
+    def orientation(self):
         """
         Image Orientation.
         """
@@ -210,7 +213,6 @@ class FileObject(File):
                 return "Portrait"
         else:
             return None
-    orientation = property(_orientation)
 
     @property
     def is_empty(self):
