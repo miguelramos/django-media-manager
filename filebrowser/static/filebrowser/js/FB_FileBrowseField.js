@@ -10,7 +10,6 @@ function FileSubmit(FileURL, ThumbURL, FileType) {
     // var help_id = 'help_' + input_id;
     console.log('input_id: ' + input_id);
     input = opener.document.getElementById(input_id);
-    console.log(input);
     preview = opener.document.getElementById(preview_id);
     previewImage = opener.document.getElementById(previewimage_id);
     link = opener.document.getElementById(link_id);
@@ -22,10 +21,16 @@ function FileSubmit(FileURL, ThumbURL, FileType) {
         // selected file is an image and thumbnail is available:
         // display the preview-image (thumbnail)
         // link the preview-image to the original image
-        link.setAttribute("href", FileURL);
-        link.setAttribute("target", "_blank");
-        preview.style.display = 'block';
-        previewImage.setAttribute("src", ThumbURL);
+        if (link) {
+            link.setAttribute("href", FileURL);
+            link.setAttribute("target", "_blank");
+        }
+        if (preview) {
+            preview.style.display = 'block';
+        }
+        if (previewImage) {
+            previewImage.setAttribute("src", ThumbURL);
+        }
         // clear out any errors.
         errorList = preview.parentNode.querySelector('.errorlist');
         if (errorList) {
@@ -34,10 +39,16 @@ function FileSubmit(FileURL, ThumbURL, FileType) {
         // help.setAttribute("style", "display:block");
     } else {
         // hide preview elements
-        link.setAttribute("href", "");
-        link.setAttribute("target", "");
-        preview.style.display = 'none';
-        previewImage.setAttribute("src", "");
+        if (link) {
+            link.setAttribute("href", "");
+            link.setAttribute("target", "");
+        }
+        if (preview) {
+            preview.style.display = 'none';
+        }
+        if (previewImage) {
+            previewImage.setAttribute("src", "");
+        }
         // help.setAttribute("style", "display:none");
     }
     this.close();

@@ -1,5 +1,8 @@
 # Changelog
 
+### 11-17-2014 v4.0.5
+*   Made FileBrowseField.js more cautious about wether the "link" DOM object exists.
+
 ### 11-13-2014 v4.0.4
 *   Bug fix. If value on a FileBrowseField is blank, it's set to '' in the database.
 
