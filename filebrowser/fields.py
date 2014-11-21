@@ -172,6 +172,7 @@ class FileBrowseField(Field):
         self.directory = kwargs.pop('directory', '')
         self.extensions = kwargs.pop('extensions', '')
         self.format = kwargs.pop('format', '')
+        self.max_length = kwargs.get('max_length', 255)
         super(FileBrowseField, self).__init__(*args, **kwargs)
 
     def contribute_to_class(self, cls, name):
@@ -209,6 +210,11 @@ class FileBrowseField(Field):
 
     def get_internal_type(self):
         return "CharField"
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(FileBrowseField, self).deconstruct()
+        kwargs['max_length'] = self.max_length
+        return name, path, args, kwargs
 
     def formfield(self, **kwargs):
         attrs = {}

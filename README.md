@@ -1,5 +1,9 @@
 # Changelog
 
+### 11-17-2014 v4.0.6
+*   Gave FileBrowseField a default max_length of 255. Can be overridden in declaration.
+*   Added a `deconstruct` method that is necessary for Django 1.7 migrations.
+
 ### 11-17-2014 v4.0.5
 *   Made FileBrowseField.js more cautious about wether the "link" DOM object exists.
 
