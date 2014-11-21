@@ -37,7 +37,7 @@ class Command(NoArgsCommand):
                     self.createVersions(os.path.join(dirpath, filename))
     
     def createVersions(self, path):
-        print "generating versions for: ", path
+        print("generating versions for: {0}".format(path))
         from filebrowser.settings import VERSIONS
         from filebrowser.functions import version_generator
         for version in VERSIONS:
