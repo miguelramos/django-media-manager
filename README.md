@@ -1,3 +1,7 @@
+## WITHOUT TIME TO MAINTAIN
+
+At the moment i'm without time to maintain this great project. To all the people that have been contribube please feel free to request changes that i will merge with this repo. To anyone who wants to maintain this project just pm a message.
+
 # Changelog
 
 ### 25-08-2014 v3.4.0
