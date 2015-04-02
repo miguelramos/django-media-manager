@@ -42,85 +42,88 @@ Filebrowser will now use templates for django suit.
 
 ## Suit CKEditor/Redactor
 To use filebrowser on [django-suit-ckeditor](https://github.com/darklow/django-suit-ckeditor) or [django-suit-redactor](https://github.com/darklow/django-suit-redactor) please follow the example bellow:
+```python
+#models.py
 
-	#models.py
-	
-	from django.db import models
-	from filebrowser.fields import FileBrowseField
-	
-	class MediaPublication(models.Model):
-    	ckeditor = models.TextField(help_text='Editor CKEditor')
-    	redactor = models.TextField(help_text='Editor Redactor')
-    	image = FileBrowseField("Image", max_length=200, blank=True, null=True)
-    	image_initialdir = FileBrowseField("Image (Initial Directory)", max_length=200, directory="images/", blank=True, null=True)
-    	image_extensions = FileBrowseField("Image (Extensions)", max_length=200, extensions=['.jpg'],
-                                       help_text="Only jpg-Images allowed.", blank=True, null=True)
-    	image_format = FileBrowseField("Image (Format)", max_length=200, format='Image', blank=True, null=True)
-    	pdf = FileBrowseField("PDF", max_length=200, directory="documents/", extensions=['.pdf'], format='Document',
-                          blank=True, null=True)
+from django.db import models
+from filebrowser.fields import FileBrowseField
 
-    	class Meta:
-        	ordering = ['image',]
-        	verbose_name = 'publication'
-        	verbose_name_plural = 'publications'
+class MediaPublication(models.Model):
+    ckeditor = models.TextField(help_text='Editor CKEditor')
+    redactor = models.TextField(help_text='Editor Redactor')
+    image = FileBrowseField("Image", max_length=200, blank=True, null=True)
+    image_initialdir = FileBrowseField("Image (Initial Directory)", max_length=200, directory="images/", blank=True, null=True)
+    image_extensions = FileBrowseField("Image (Extensions)", max_length=200, extensions=['.jpg'],
+                               help_text="Only jpg-Images allowed.", blank=True, null=True)
+    image_format = FileBrowseField("Image (Format)", max_length=200, format='Image', blank=True, null=True)
+    pdf = FileBrowseField("PDF", max_length=200, directory="documents/", extensions=['.pdf'], format='Document',
+                  blank=True, null=True)
+
+    class Meta:
+	ordering = ['image',]
+	verbose_name = 'publication'
+	verbose_name_plural = 'publications'
+```
 
 To use on admin you need to do some litle tweeks:
 
-	#admin.py
-	from django.contrib import admin
-	from django.forms import ModelForm, Media
-	from suit_ckeditor.widgets import CKEditorWidget
-	from suit_redactor.widgets import RedactorWidget
+```python
+#admin.py
+from django.contrib import admin
+from django.forms import ModelForm, Media
+from suit_ckeditor.widgets import CKEditorWidget
+from suit_redactor.widgets import RedactorWidget
 
-	from .models import MediaPublication
-
-
-	class Editor(ModelForm):
-    	class Meta:
-        	widgets = {
-            	'ckeditor': CKEditorWidget(editor_options={'startupFocus': True}),
-            	'redactor': RedactorWidget(editor_options={
-                	'lang': 'en',
-                	'plugins': ['filebrowser']
-            	}),
-        	}
-
-    	class Media:
-        	js = ('filebrowser/js/FB_CKEditor.js', 'filebrowser/js/FB_Redactor.js')
-        	css = {
-            	'all': ('filebrowser/css/suit-filebrowser.css',)
-        	}
-        	
-    class AdminPublication(admin.ModelAdmin):
-    	form = Editor
-
-    	fieldsets = (
-        	(None, {
-            	'classes': ('suit-tab suit-tab-media',),
-            	'fields': ['image', 'image_initialdir', 'image_extensions', 'image_format', 'pdf'],
-        	}),
-        	('CKEditor', {
-            	'classes': ('full-width',),
-            	'fields': ('ckeditor',)
-        	}),
-        	('Redactor', {
-            	'classes': ('full-width',),
-            	'fields': ('redactor',)
-        	}),
-    	)
-
-    	list_display = ('thumbnail', 'image_extensions', 'pdf')
-    	suit_form_tabs = (('media', 'Media'),)
-
-    	def thumbnail(self, obj):
-        	if obj.image:
-            	return '<img src="%s" />' % obj.image.url_thumbnail
-        	else:
-            	return ""
-    	thumbnail.allow_tags = True
+from .models import MediaPublication
 
 
-	admin.site.register(MediaPublication, AdminPublication)
+class Editor(ModelForm):
+    class Meta:
+	widgets = {
+    	'ckeditor': CKEditorWidget(editor_options={'startupFocus': True}),
+    	'redactor': RedactorWidget(editor_options={
+        	'lang': 'en',
+        	'plugins': ['filebrowser']
+    	}),
+	}
+
+    class Media:
+	js = ('filebrowser/js/FB_CKEditor.js', 'filebrowser/js/FB_Redactor.js')
+	css = {
+    	'all': ('filebrowser/css/suit-filebrowser.css',)
+	}
+	
+class AdminPublication(admin.ModelAdmin):
+    form = Editor
+
+    fieldsets = (
+	(None, {
+    	'classes': ('suit-tab suit-tab-media',),
+    	'fields': ['image', 'image_initialdir', 'image_extensions', 'image_format', 'pdf'],
+	}),
+	('CKEditor', {
+    	'classes': ('full-width',),
+    	'fields': ('ckeditor',)
+	}),
+	('Redactor', {
+    	'classes': ('full-width',),
+    	'fields': ('redactor',)
+	}),
+    )
+
+    list_display = ('thumbnail', 'image_extensions', 'pdf')
+    suit_form_tabs = (('media', 'Media'),)
+
+    def thumbnail(self, obj):
+	if obj.image:
+    	return '<img src="%s" />' % obj.image.url_thumbnail
+	else:
+    	return ""
+    thumbnail.allow_tags = True
+
+
+admin.site.register(MediaPublication, AdminPublication)
+```
    
 The most important things are on ModelForm (Media and Widgets). To use browser on CKEditor and have the button to navigate on filebrowser you only need to add the js file to Media
 
