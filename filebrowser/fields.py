@@ -105,7 +105,7 @@ class FileBrowseField(Field):
     def get_db_prep_value(self, value, connection, prepared=False):
         if value is None:
             return None
-        return unicode(value)
+        return str(value)
 
     def get_manipulator_field_objs(self):
         return [oldforms.TextField]
