@@ -26,7 +26,7 @@ RedactorPlugins.filebrowser = {
     },
     activeBrowser: function(){
         var win = window.open(
-            '/admin/filebrowser/browse?pop=4&Redactor='+this.$el.attr('id'),
+            '/admin/filebrowser/browse/?pop=4&Redactor='+this.$el.attr('id'),
             'File Browser',
             'height=600,width=960,resizable=yes,scrollbars=yes'
         );
