@@ -16,6 +16,9 @@ from django.utils.encoding import smart_str
 from filebrowser.settings import *
 from filebrowser.conf import fb_settings
 
+import sys
+_ver = sys.version_info
+
 # PIL import
 if STRICT_PIL:
     from PIL import Image
@@ -120,15 +123,21 @@ def sort_by_attr(seq, attr):
     # (seq[i].attr, i, seq[i]) and sort it. The second item of tuple is needed not
     # only to provide stable sorting, but mainly to eliminate comparison of objects
     # (which can be expensive or prohibited) in case of equal attribute values.
-    intermed = map(None, map(getattr, seq, (attr,)*len(seq)), itertools.zip_longest(range(len(seq)), seq))
-    # intermed.sort()
-    try:
-        intermed = sorted(intermed)
-        # does this actually DO anything?
-        print(intermed)
-        return list(map(operator.getitem, intermed, (-1,) * len(intermed)))
-    except TypeError:
-        return seq
+
+    if _ver >= (3, 0):
+        intermed = map(None, map(getattr, seq, (attr,)*len(seq)), itertools.zip_longest(range(len(seq)), seq))
+        # intermed.sort()
+        try:
+            intermed = sorted(intermed)
+            # does this actually DO anything?
+            print(intermed)
+            return list(map(operator.getitem, intermed, (-1,) * len(intermed)))
+        except TypeError:
+            return seq
+    else:
+        intermed = map(None, map(getattr, seq, (attr,)*len(seq)), range(len(seq)), seq)
+        intermed.sort()
+        return map(operator.getitem, intermed, (-1,) * len(intermed))
 
 
 def url_join(*args):
@@ -379,5 +388,3 @@ def convert_filename(value):
         return value.replace(" ", "_").lower()
     else:
         return value
-
-
