@@ -4,6 +4,9 @@ At the moment i'm without time to maintain this great project. To all the people
 
 # Changelog
 
+### 06-10-2016 v3.4.1
+*   Mandatory django version >= 1.8
+
 ### 25-08-2014 v3.4.0
 *   Uses Pillow now.
 *   Python 3 only now.
