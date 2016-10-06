@@ -20,3 +20,4 @@ build/
 dist/
 django_media_manager.egg-info
 example/example/local_settings.py
+.DS_Store

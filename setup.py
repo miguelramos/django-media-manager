@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-media-manager',
-    version='3.4.0',
+    version='3.4.1',
     description='Media-Management with the Django Admin-Interface.',
     author=['Patrick Kranzlmueller','Six Foot'],
     author_email='dev@6ft.com',
@@ -20,7 +20,7 @@ setup(
         'Framework :: Django',
     ],
     install_requires = [
-        "Django>=1.5",
+        "Django>=1.8",
         "pillow",
     ],
 )
