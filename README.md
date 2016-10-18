@@ -30,7 +30,7 @@ At the moment i'm without time to maintain this great project. To all the people
 	or
 	pip install https://github.com/miguelramos/django-media-manager/archive/master.zip
 
-*	Add filebrowser to INSTALLED_APPS.
+*	Add filebrowser to INSTALLED_APPS before django.contrib.admin.
 *	Add the following line _before_ the admin URLS:
 *		(r'^admin/filebrowser/', include('filebrowser.urls'))
 *	Collect static files
