@@ -21,9 +21,6 @@ def flash_login_required(function):
         session_data = engine.SessionStore(request.POST.get('session_key'))
         user_id = session_data['_auth_user_id']
         # will return 404 if the session ID does not resolve to a valid user
-        User = get_user_model()
-        request.user = get_object_or_404(User, pk=user_id)
+        request.user = get_object_or_404(get_user_model(), pk=user_id)
         return function(request, *args, **kwargs)
     return decorator
-
-

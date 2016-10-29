@@ -1,5 +1,5 @@
-
 from filebrowser import settings
+
 
 class FileBrowserSettings(object):
     """

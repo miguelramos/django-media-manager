@@ -4,15 +4,16 @@
 import os
 
 # django imports
-from django.db import models
 from django import forms
 from django.forms.widgets import Input
-from django.db.models.fields import Field, CharField
+from django.db.models.fields import Field
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 # filebrowser imports
-from filebrowser.settings import *
+from filebrowser.settings import (
+    URL_FILEBROWSER_MEDIA, ADMIN_THUMBNAIL, DEBUG, EXTENSIONS
+)
 from filebrowser.base import FileObject
 from filebrowser.conf import fb_settings
 from filebrowser.functions import url_to_path
@@ -46,8 +47,9 @@ class FileBrowseWidget(Input):
         if value is None:
             value = ""
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
-        final_attrs[
-            'search_icon'] = URL_FILEBROWSER_MEDIA + 'img/filebrowser_icon_show.gif'
+        final_attrs['search_icon'] = os.path.join(
+            URL_FILEBROWSER_MEDIA, 'img/filebrowser_icon_show.gif'
+        )
         final_attrs['directory'] = self.directory
         final_attrs['extensions'] = self.extensions
         final_attrs['format'] = self.format
@@ -86,7 +88,7 @@ class FileBrowseFormField(forms.CharField):
         if value == '':
             return value
         file_extension = os.path.splitext(value)[1].lower()
-        if self.extensions and not file_extension in self.extensions:
+        if self.extensions and file_extension not in self.extensions:
             raise forms.ValidationError(
                 self.error_messages['extension'] % {'ext': file_extension,
                                                     'allowed': ", ".join(
@@ -111,17 +113,20 @@ class FileBrowseField(Field):
             return None
         return str(value)
 
-    def get_manipulator_field_objs(self):
-        return [oldforms.TextField]
+    # FIXME: recheck or need it
+    # @staticmethod
+    # def get_manipulator_field_objs():
+    #     return [oldforms.TextField]
 
     def get_internal_type(self):
         return "CharField"
 
     def formfield(self, **kwargs):
-        attrs = {}
-        attrs["directory"] = self.directory
-        attrs["extensions"] = self.extensions
-        attrs["format"] = self.format
+        attrs = {
+            "directory": self.directory,
+            "extensions": self.extensions,
+            "format": self.format
+        }
         defaults = {
             'form_class': FileBrowseFormField,
             'widget': FileBrowseWidget(attrs=attrs),
@@ -131,11 +136,3 @@ class FileBrowseField(Field):
         }
         defaults.update(kwargs)
         return super(FileBrowseField, self).formfield(**defaults)
-
-
-try:
-    from south.modelsinspector import add_introspection_rules
-
-    add_introspection_rules([], ["^filebrowser\.fields\.FileBrowseField"])
-except:
-    pass
