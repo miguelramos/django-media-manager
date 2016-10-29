@@ -103,6 +103,11 @@ class FileBrowseField(Field):
         self.format = kwargs.pop('format', '')
         super(FileBrowseField, self).__init__(*args, **kwargs)
 
+    def from_db_value(self, value, expression, connection, context):
+        if not value or isinstance(value, FileObject):
+            return value
+        return FileObject(url_to_path(value))
+
     def to_python(self, value):
         if not value or isinstance(value, FileObject):
             return value
