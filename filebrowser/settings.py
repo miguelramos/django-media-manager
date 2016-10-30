@@ -208,3 +208,9 @@ _('Code')
 
 # Suit Template
 SUIT_TEMPLATE = getattr(settings, "FILEBROWSER_SUIT_TEMPLATE", None)
+# Show menu items at admin panel
+SHOW_AT_ADMIN_PANEL = getattr(
+    settings,
+    "FILEBROWSER_SHOW_AT_ADMIN_PANEL",
+    False
+)
