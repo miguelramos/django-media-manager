@@ -30,7 +30,7 @@ from filebrowser.conf import fb_settings
 from filebrowser.functions import (
     path_to_url, sort_by_attr, get_path, get_file, get_version_path,
     get_breadcrumbs, get_filterdate, get_settings_var, handle_file_upload,
-    convert_filename
+    convert_filename, _template
 )
 from filebrowser.templatetags.fb_tags import query_helper
 from filebrowser.base import FileObject
@@ -57,15 +57,6 @@ def _check_access(request, *path):
         # cause any attempt to leave media root directory to fail
         raise Http404
     return abs_path
-
-
-def _template():
-    if fb_settings.SUIT_TEMPLATE:
-        path = 'suit/'
-    else:
-        path = 'filebrowser/'
-
-    return path
 
 
 @never_cache

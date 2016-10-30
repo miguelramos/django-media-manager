@@ -15,17 +15,7 @@ from filebrowser.settings import (
     URL_FILEBROWSER_MEDIA, ADMIN_THUMBNAIL, DEBUG, EXTENSIONS
 )
 from filebrowser.base import FileObject
-from filebrowser.conf import fb_settings
-from filebrowser.functions import url_to_path
-
-
-def _template():
-    if fb_settings.SUIT_TEMPLATE:
-        path = 'suit/'
-    else:
-        path = 'filebrowser/'
-
-    return path
+from filebrowser.functions import url_to_path, _template
 
 
 class FileBrowseWidget(Input):

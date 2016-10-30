@@ -396,3 +396,12 @@ def convert_filename(value):
         return value.replace(" ", "_").lower()
     else:
         return value
+
+
+def _template():
+    if fb_settings.SUIT_TEMPLATE:
+        path = 'suit/'
+    else:
+        path = 'filebrowser/'
+
+    return path
