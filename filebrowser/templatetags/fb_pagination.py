@@ -21,7 +21,7 @@ def _template():
     _template() + 'include/paginator.html', takes_context=True
 )
 def pagination(context):
-    page_num = context['page'].number-1
+    page_num = context['page'].number - 1
     paginator = context['p']
     
     if not paginator.num_pages or paginator.num_pages == 1:

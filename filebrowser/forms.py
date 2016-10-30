@@ -34,17 +34,16 @@ class MakeDirForm(forms.Form):
         super(MakeDirForm, self).__init__(*args, **kwargs)
     
     def clean_dir_name(self):
-        if self.cleaned_data['dir_name']:
-            # only letters, numbers, underscores,
-            # spaces and hyphens are allowed.
-            if not alnum_name_re.search(self.cleaned_data['dir_name']):
-                raise forms.ValidationError(
-                    _('Only letters, numbers, underscores, '
-                      'spaces and hyphens are allowed.')
-                )
-            # Folder must not already exist.
-            if os.path.isdir(os.path.join(self.path, convert_filename(self.cleaned_data['dir_name']))):
-                raise forms.ValidationError(_('The Folder already exists.'))
+        # only letters, numbers, underscores,
+        # spaces and hyphens are allowed.
+        if not alnum_name_re.search(self.cleaned_data['dir_name']):
+            raise forms.ValidationError(
+                _('Only letters, numbers, underscores, '
+                  'spaces and hyphens are allowed.')
+            )
+        # Folder must not already exist.
+        if os.path.isdir(os.path.join(self.path, convert_filename(self.cleaned_data['dir_name']))):
+            raise forms.ValidationError(_('The Folder already exists.'))
         return convert_filename(self.cleaned_data['dir_name'])
 
 
@@ -78,7 +77,7 @@ class RenameForm(forms.Form):
                 )
             #  folder/file must not already exist.
             if os.path.isdir(os.path.join(self.path, convert_filename(self.cleaned_data['name']))):
-                raise forms.ValidationError(_(u'The Folder already exists.'))
+                raise forms.ValidationError(_('The Folder already exists.'))
             elif os.path.isfile(os.path.join(self.path, convert_filename(self.cleaned_data['name']) + self.file_extension)):
-                raise forms.ValidationError(_(u'The File already exists.'))
+                raise forms.ValidationError(_('The File already exists.'))
         return convert_filename(self.cleaned_data['name'])

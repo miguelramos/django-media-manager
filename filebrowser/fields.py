@@ -38,10 +38,7 @@ class FileBrowseWidget(Input):
         self.directory = attrs.get('directory', '')
         self.extensions = attrs.get('extensions', '')
         self.format = attrs.get('format', '')
-        if attrs is not None:
-            self.attrs = attrs.copy()
-        else:
-            self.attrs = {}
+        super(FileBrowseWidget, self).__init__(attrs)
 
     def render(self, name, value, attrs=None):
         if value is None:
@@ -65,8 +62,6 @@ class FileBrowseWidget(Input):
 
 
 class FileBrowseFormField(forms.CharField):
-    widget = FileBrowseWidget
-
     default_error_messages = {
         'extension': _(
             u'Extension %(ext)s is not allowed. Only %(allowed)s is allowed.'),
@@ -78,9 +73,15 @@ class FileBrowseFormField(forms.CharField):
         self.max_length, self.min_length = max_length, min_length
         self.directory = directory
         self.extensions = extensions
-        if format:
-            self.format = format or ''
-            self.extensions = extensions or EXTENSIONS.get(format)
+        self.format = format or ''
+        self.extensions = extensions or EXTENSIONS.get(format)
+
+        attrs = {
+            "directory": self.directory,
+            "extensions": self.extensions,
+            "format": self.format
+        }
+        self.widget = FileBrowseWidget(attrs)
         super(FileBrowseFormField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
@@ -101,6 +102,7 @@ class FileBrowseField(Field):
         self.directory = kwargs.pop('directory', '')
         self.extensions = kwargs.pop('extensions', '')
         self.format = kwargs.pop('format', '')
+        kwargs['max_length'] = kwargs.get('max_length', 200)
         super(FileBrowseField, self).__init__(*args, **kwargs)
 
     def from_db_value(self, value, expression, connection, context):

@@ -35,6 +35,7 @@ from filebrowser.functions import (
 from filebrowser.templatetags.fb_tags import query_helper
 from filebrowser.base import FileObject
 from filebrowser.decorators import flash_login_required
+from filebrowser.forms import MakeDirForm, RenameForm
 
 # Precompile regular expressions
 filter_re = []
@@ -67,6 +68,8 @@ def _template():
     return path
 
 
+@never_cache
+@staff_member_required
 def browse(request):
     """
     Browse Files/Directories.
@@ -189,20 +192,17 @@ def browse(request):
     })
 
 
-browse = staff_member_required(never_cache(browse))
-
 # mkdir signals
 filebrowser_pre_createdir = Signal(providing_args=["path", "dirname"])
 filebrowser_post_createdir = Signal(providing_args=["path", "dirname"])
 
 
+@never_cache
+@staff_member_required
 def mkdir(request):
     """
     Make Directory.
     """
-
-    from filebrowser.forms import MakeDirForm
-
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
@@ -267,9 +267,8 @@ def mkdir(request):
     })
 
 
-mkdir = staff_member_required(never_cache(mkdir))
-
-
+@never_cache
+@staff_member_required
 def upload(request):
     """
     Multipe File Upload.
@@ -302,9 +301,6 @@ def upload(request):
         'breadcrumbs_title': _(u'Upload'),
         'is_popup': is_popup
     })
-
-
-upload = staff_member_required(never_cache(upload))
 
 
 @csrf_exempt
@@ -385,6 +381,8 @@ filebrowser_pre_delete = Signal(providing_args=["path", "filename"])
 filebrowser_post_delete = Signal(providing_args=["path", "filename"])
 
 
+@never_cache
+@staff_member_required
 def delete(request):
     """
     Delete existing File/Directory.
@@ -439,7 +437,7 @@ def delete(request):
                 return HttpResponseRedirect(redirect_url)
             except OSError as e:
                 # todo: define error message
-                msg = unicode(e)
+                msg = str(e)
         else:
             try:
                 # PRE DELETE SIGNAL
@@ -459,7 +457,7 @@ def delete(request):
                 return HttpResponseRedirect(redirect_url)
             except OSError as e:
                 # todo: define error message
-                msg = unicode(e)
+                msg = str(e)
 
     if msg:
         messages.error(request, e)
@@ -469,8 +467,6 @@ def delete(request):
     return HttpResponseRedirect(redirect_url)
 
 
-delete = staff_member_required(never_cache(delete))
-
 # rename signals
 filebrowser_pre_rename = Signal(
     providing_args=["path", "filename", "new_filename"])
@@ -478,15 +474,14 @@ filebrowser_post_rename = Signal(
     providing_args=["path", "filename", "new_filename"])
 
 
+@never_cache
+@staff_member_required
 def rename(request):
     """
     Rename existing File/Directory.
 
     Includes renaming existing Image Versions/Thumbnails.
     """
-
-    from filebrowser.forms import RenameForm
-
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
@@ -562,9 +557,8 @@ def rename(request):
     })
 
 
-rename = staff_member_required(never_cache(rename))
-
-
+@never_cache
+@staff_member_required
 def versions(request):
     """
     Show all Versions for an Image according to ADMIN_VERSIONS.
@@ -599,6 +593,3 @@ def versions(request):
         'breadcrumbs_title': _(u'Versions for "{0}"').format(filename),
         'is_popup': is_popup
     })
-
-
-versions = staff_member_required(never_cache(versions))
