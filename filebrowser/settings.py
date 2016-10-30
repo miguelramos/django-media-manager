@@ -194,7 +194,7 @@ DEFAULT_SORTING_ORDER = getattr(
 FOLDER_REGEX = getattr(
     settings,
     "FILEBROWSER_FOLDER_REGEX",
-    r'^[ \w-][ \w.-]*$'
+    r'^(?u)[ \w-][ \w.-]*$'
 )
 
 # EXTRA TRANSLATION STRINGS

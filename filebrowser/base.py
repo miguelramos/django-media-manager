@@ -99,7 +99,7 @@ class FileObject(object):
         """
         directory_re = re.compile(r'^({0})'.format(fb_settings.DIRECTORY))
         value = directory_re.sub('', self.path)
-        return u"{0}".format(value)
+        return value
     path_relative_directory = property(_path_relative_directory)
     
     def _url_relative(self):
