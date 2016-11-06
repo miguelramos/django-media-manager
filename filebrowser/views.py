@@ -42,7 +42,7 @@ filter_re = []
 for exp in EXCLUDE:
     filter_re.append(re.compile(exp))
 for k, v in VERSIONS.items():
-    exp = r'_{0}.({1})'.format(k, '|'.join(EXTENSION_LIST))
+    exp = r'_{0}({1})'.format(k, '|'.join(EXTENSION_LIST))
     filter_re.append(re.compile(exp))
 
 
