@@ -12,7 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 
 # filebrowser imports
 from filebrowser.settings import (
-    URL_FILEBROWSER_MEDIA, ADMIN_THUMBNAIL, DEBUG, EXTENSIONS
+    URL_FILEBROWSER_MEDIA, ADMIN_THUMBNAIL, DEBUG, EXTENSIONS, MEDIA_ROOT,
+    DIRECTORY
 )
 from filebrowser.base import FileObject
 from filebrowser.functions import url_to_path, _template
@@ -29,6 +30,10 @@ class FileBrowseWidget(Input):
         self.extensions = attrs.get('extensions', '')
         self.format = attrs.get('format', '')
         super(FileBrowseWidget, self).__init__(attrs)
+        # if field have a directory - create it
+        dir_path = os.path.join(MEDIA_ROOT, DIRECTORY, self.directory)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
 
     def render(self, name, value, attrs=None):
         if value is None:
