@@ -5,10 +5,12 @@ function ProtectPath(path) {
 }
 
 function gup( name ) {
+  var url = encodeURI(window.location.href);
+  url = url.replace(/&amp;/g, '&');
   name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
   var regexS = "[\\?&]"+name+"=([^&#]*)";
   var regex = new RegExp(regexS);
-  var results = regex.exec(window.location.href);
+  var results = regex.exec(url);
   if(results == null)
     return "";
   else
