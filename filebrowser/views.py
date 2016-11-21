@@ -1,12 +1,11 @@
 # coding: utf-8
 
 # general imports
-import os, re
-from time import gmtime, strftime
+import os
+import re
 
 # django imports
 from django.shortcuts import render, HttpResponse
-from django.template import RequestContext as Context
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.cache import never_cache
@@ -23,21 +22,27 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
 # filebrowser imports
-from filebrowser.settings import *
+from filebrowser.settings import (
+    EXCLUDE, VERSIONS, EXTENSION_LIST, EXTENSIONS, SELECT_FORMATS,
+    DEFAULT_SORTING_BY, DEFAULT_SORTING_ORDER, LIST_PER_PAGE
+)
 from filebrowser.conf import fb_settings
-from filebrowser.functions import path_to_url, sort_by_attr, get_path, \
-    get_file, get_version_path, get_breadcrumbs, get_filterdate, \
-    get_settings_var, handle_file_upload, convert_filename
+from filebrowser.functions import (
+    path_to_url, sort_by_attr, get_path, get_file, get_version_path,
+    get_breadcrumbs, get_filterdate, get_settings_var, handle_file_upload,
+    convert_filename, _template
+)
 from filebrowser.templatetags.fb_tags import query_helper
 from filebrowser.base import FileObject
 from filebrowser.decorators import flash_login_required
+from filebrowser.forms import MakeDirForm, RenameForm
 
 # Precompile regular expressions
 filter_re = []
 for exp in EXCLUDE:
     filter_re.append(re.compile(exp))
 for k, v in VERSIONS.items():
-    exp = (r'_{0}.({1})').format(k, '|'.join(EXTENSION_LIST))
+    exp = r'_{0}({1})'.format(k, '|'.join(EXTENSION_LIST))
     filter_re.append(re.compile(exp))
 
 
@@ -54,15 +59,8 @@ def _check_access(request, *path):
     return abs_path
 
 
-def _template():
-    if fb_settings.SUIT_TEMPLATE:
-        path = 'suit/'
-    else:
-        path = 'filebrowser/'
-
-    return path
-
-
+@never_cache
+@staff_member_required
 def browse(request):
     """
     Browse Files/Directories.
@@ -84,7 +82,8 @@ def browse(request):
         msg = _('The requested Folder does not exist.')
         messages.warning(request, message=msg)
         if directory is None:
-            # The DIRECTORY does not exist, raise an error to prevent eternal redirecting.
+            # The DIRECTORY does not exist,
+            # raise an error to prevent eternal redirecting.
             raise ImproperlyConfigured(
                 _("Error finding Upload-Folder. Maybe it does not exist?"))
         redirect_url = reverse("fb_browse") + query_helper(query, "", "dir")
@@ -116,9 +115,8 @@ def browse(request):
 
         # FILTER / SEARCH
         append = False
-        if fileobject.filetype == request.GET.get('filter_type',
-                                                  fileobject.filetype) and get_filterdate(
-                request.GET.get('filter_date', ''), fileobject.date):
+        if fileobject.filetype == request.GET.get('filter_type', fileobject.filetype) and \
+                get_filterdate(request.GET.get('filter_date', ''), fileobject.date):
             append = True
         if request.GET.get('q') and not re.compile(
                 request.GET.get('q').lower(), re.M).search(file.lower()):
@@ -135,8 +133,8 @@ def browse(request):
                     results_var['delete_total'] += 1
                 elif fileobject.filetype == 'Folder' and fileobject.is_empty:
                     results_var['delete_total'] += 1
-                if _type and _type in SELECT_FORMATS and fileobject.filetype in \
-                        SELECT_FORMATS[_type]:
+                if _type and _type in SELECT_FORMATS and \
+                        fileobject.filetype in SELECT_FORMATS[_type]:
                     results_var['select_total'] += 1
                 elif not _type:
                     results_var['select_total'] += 1
@@ -162,8 +160,8 @@ def browse(request):
 
     p = Paginator(files, LIST_PER_PAGE)
     try:
-        page_nr = request.GET.get('p', '1')
-    except:
+        page_nr = int(request.GET.get('p', '1'))
+    except ValueError:
         page_nr = 1
     try:
         page = p.page(page_nr)
@@ -185,20 +183,17 @@ def browse(request):
     })
 
 
-browse = staff_member_required(never_cache(browse))
-
 # mkdir signals
 filebrowser_pre_createdir = Signal(providing_args=["path", "dirname"])
 filebrowser_post_createdir = Signal(providing_args=["path", "dirname"])
 
 
+@never_cache
+@staff_member_required
 def mkdir(request):
     """
     Make Directory.
     """
-
-    from filebrowser.forms import MakeDirForm
-
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
@@ -221,10 +216,10 @@ def mkdir(request):
             server_path = _check_access(request, path, _new_dir_name)
             try:
                 # PRE CREATE SIGNAL
-                filebrowser_pre_createdir.send(sender=request, path=path,
+                filebrowser_pre_createdir.send(sender=request,
+                                               path=path,
                                                dirname=_new_dir_name)
                 # CREATE FOLDER
-                print(server_path)
                 os.mkdir(server_path)
                 os.chmod(server_path, 0o775)
                 # POST CREATE SIGNAL
@@ -234,7 +229,8 @@ def mkdir(request):
                 msg = _('The Folder {0} was successfully created.').format(
                     _new_dir_name)
                 messages.success(request, message=msg)
-                # on redirect, sort by date desc to see the new directory on top of the list
+                # on redirect, sort by date desc to see
+                # the new directory on top of the list
                 # remove filter in order to actually _see_ the new folder
                 # remove pagination
                 redirect_url = reverse("fb_browse") + query_helper(query,
@@ -243,10 +239,10 @@ def mkdir(request):
                 return HttpResponseRedirect(redirect_url)
             except OSError as e:
                 if e.errno == 13:
-                    form.errors['dir_name'] = forms.util.ErrorList(
+                    form.errors['dir_name'] = forms.utils.ErrorList(
                         [_('Permission denied.')])
                 else:
-                    form.errors['dir_name'] = forms.util.ErrorList(
+                    form.errors['dir_name'] = forms.utils.ErrorList(
                         [_('Error creating folder.')])
     else:
         form = MakeDirForm(abs_path)
@@ -262,15 +258,12 @@ def mkdir(request):
     })
 
 
-mkdir = staff_member_required(never_cache(mkdir))
-
-
+@never_cache
+@staff_member_required
 def upload(request):
     """
     Multipe File Upload.
     """
-
-    from django.http import parse_cookie
 
     # QUERY / PATH CHECK
     query = request.GET
@@ -301,9 +294,6 @@ def upload(request):
     })
 
 
-upload = staff_member_required(never_cache(upload))
-
-
 @csrf_exempt
 @staff_member_required
 def _check_file(request):
@@ -316,16 +306,17 @@ def _check_file(request):
     fb_uploadurl_re = re.compile(r'^.*({0})'.format(reverse("fb_upload")))
     folder = fb_uploadurl_re.sub('', folder)
 
-    fileArray = {}
+    file_array = {}
     if request.method == 'POST':
         for k, v in request.POST.items():
             if k != "folder":
                 v = convert_filename(v)
                 if os.path.isfile(
                         smart_str(_check_access(request, folder, v))):
-                    fileArray[k] = v
+                    file_array[k] = v
 
-    return HttpResponse(json.dumps(fileArray))
+    # TODO: change and test with JsonResponse
+    return HttpResponse(json.dumps(file_array))
 
 
 # upload signals
@@ -381,6 +372,8 @@ filebrowser_pre_delete = Signal(providing_args=["path", "filename"])
 filebrowser_post_delete = Signal(providing_args=["path", "filename"])
 
 
+@never_cache
+@staff_member_required
 def delete(request):
     """
     Delete existing File/Directory.
@@ -435,7 +428,7 @@ def delete(request):
                 return HttpResponseRedirect(redirect_url)
             except OSError as e:
                 # todo: define error message
-                msg = unicode(e)
+                msg = str(e)
         else:
             try:
                 # PRE DELETE SIGNAL
@@ -455,7 +448,7 @@ def delete(request):
                 return HttpResponseRedirect(redirect_url)
             except OSError as e:
                 # todo: define error message
-                msg = unicode(e)
+                msg = str(e)
 
     if msg:
         messages.error(request, e)
@@ -465,8 +458,6 @@ def delete(request):
     return HttpResponseRedirect(redirect_url)
 
 
-delete = staff_member_required(never_cache(delete))
-
 # rename signals
 filebrowser_pre_rename = Signal(
     providing_args=["path", "filename", "new_filename"])
@@ -474,15 +465,14 @@ filebrowser_post_rename = Signal(
     providing_args=["path", "filename", "new_filename"])
 
 
+@never_cache
+@staff_member_required
 def rename(request):
     """
     Rename existing File/Directory.
 
     Includes renaming existing Image Versions/Thumbnails.
     """
-
-    from filebrowser.forms import RenameForm
-
     # QUERY / PATH CHECK
     query = request.GET
     path = get_path(query.get('dir', ''))
@@ -542,7 +532,7 @@ def rename(request):
                                                                    "filename")
                 return HttpResponseRedirect(redirect_url)
             except OSError as e:
-                form.errors['name'] = forms.util.ErrorList([_('Error.')])
+                form.errors['name'] = forms.utils.ErrorList([_('Error.')])
     else:
         form = RenameForm(abs_path, file_extension)
 
@@ -558,9 +548,8 @@ def rename(request):
     })
 
 
-rename = staff_member_required(never_cache(rename))
-
-
+@never_cache
+@staff_member_required
 def versions(request):
     """
     Show all Versions for an Image according to ADMIN_VERSIONS.
@@ -595,6 +584,3 @@ def versions(request):
         'breadcrumbs_title': _(u'Versions for "{0}"').format(filename),
         'is_popup': is_popup
     })
-
-
-versions = staff_member_required(never_cache(versions))

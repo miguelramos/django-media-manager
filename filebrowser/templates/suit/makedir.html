@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static admin_list admin_urls %}
-{% load fb_tags fb_csrf %}
+{% load fb_tags %}
 
 {% block extrastyle %}
     {{ block.super }}
@@ -14,7 +14,7 @@
 {% block content %}
     <div id="content-main" class="inner-two-columns">
         <form action="{% query_string '' 'p' %}" method="post" class="form-horizontal">
-            {% fb_csrf_token %}
+            {% csrf_token %}
             <div class="inner-right-column">
                 <div class="box save-box">
                     <div class="submit-row clearfix">

@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static admin_list admin_urls %}
-{% load fb_tags fb_csrf %}
+{% load fb_tags %}
 
 {% block extrastyle %}
     {{ block.super }}
@@ -18,7 +18,7 @@
 {% block content %}
     <div id="content-main" class="inner-two-columns">
         <form action="{% query_string "" "filter_date,filter_type,q,p" %}" method="post" class="form-horizontal">
-            {% fb_csrf_token %}
+            {% csrf_token %}
             <div class="inner-right-column">
                 <div class="box save-box">
                     <div class="submit-row clearfix">
@@ -36,7 +36,7 @@
                     <fieldset class="module aligned">
                         <div class="control-group">
                             <div class="control-label">
-                                <label class="required" for="id_dir_name">{{ form.name.label }}</label>
+                                <label class="required" for="id_name">{{ form.name.label }}</label>
                             </div>
                             <div class="controls">
                                 {{ form.name }}{% if file_extension %}<b>{{ file_extension }}</b>{% endif %}
