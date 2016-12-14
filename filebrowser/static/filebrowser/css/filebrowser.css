@@ -33,7 +33,10 @@
     padding-bottom: 0 !important;
 }
 
-
+.filename_dimensions {
+    max-width: 100px;
+    word-break: break-all;
+}
 
 /*  Filebrowser Buttons & Links
 ------------------------------------------------------------------------------------------------------ */

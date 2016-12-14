@@ -15,3 +15,8 @@ body .redactor_toolbar li a.redactor_btn_browser {
     background-position: -408px -120px;*/
     background: url("../img/explorer.png") no-repeat;
 }
+
+.filename_dimensions {
+    max-width: 100px;
+    word-break: break-all;
+}
