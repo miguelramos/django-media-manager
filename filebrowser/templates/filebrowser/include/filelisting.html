@@ -53,9 +53,9 @@
         
         <!-- FILENAME/DIMENSIONS -->
         {% if file.filetype == "Folder" %}
-            <td><a href="{% url "fb_browse" %}{% query_string "" "q,dir,p" %}&amp;dir={{ file.path_relative_directory|urlencode }}"><strong>{{ file.filename }}</strong></a></td>
+            <td class="filename_dimensions"><a href="{% url "fb_browse" %}{% query_string "" "q,dir,p" %}&amp;dir={{ file.path_relative_directory|urlencode }}"><strong>{{ file.filename }}</strong></a></td>
         {% else %}
-            <td>
+            <td class="filename_dimensions">
                 <b><a href="{{ file.url_full }}">{{ file.filename }}</a></b>
                 {% if file.dimensions %}
                     <br /><span class="tiny">{{ file.dimensions.0 }} x {{ file.dimensions.1 }} px</span><br clear="all" />
