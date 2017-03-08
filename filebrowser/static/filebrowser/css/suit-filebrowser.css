@@ -16,6 +16,11 @@ body .redactor_toolbar li a.redactor_btn_browser {
     background: url("../img/explorer.png") no-repeat;
 }
 
+.filename_dimensions {
+    max-width: 100px;
+    word-break: break-all;
+}
+
 .dropzone{
     border: 2px dashed #79aec8;
     font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
@@ -38,7 +43,7 @@ body .redactor_toolbar li a.redactor_btn_browser {
     margin-top: 0;
 }
 
-.dropzone .dz-preview .dz-remove{
+.dropzone .dz-preview .dz-remove {
     color: #ba2121;
     font-size: 12px;
     font-weight: 100;
