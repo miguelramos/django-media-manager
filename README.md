@@ -4,6 +4,9 @@ At the moment i'm without time to maintain this great project. To all the people
 
 # Changelog
 
+### 08-03-2017 v3.5.0
+*   Removed flash uploader. Instead of this added drag’n’drop file uploads with image previews.
+
 ### 06-10-2016 v3.4.1
 *   Mandatory django version >= 1.8
 

@@ -207,3 +207,33 @@ ul.pulldown-actions a {
     font-weight: bold;
     white-space: nowrap;
 }
+
+.dropzone{
+    border: 2px dashed #79aec8;
+    font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+}
+
+.dropzone.dz-clickable .dz-message{
+    font-size: 18px;
+    color: #417690;
+}
+
+.dropzone .dz-preview .dz-image{
+    border-radius: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #eee;
+}
+
+.dropzone .dz-preview .dz-progress{
+    height: 5px;
+    top: 110px;
+    margin-top: 0;
+}
+
+.dropzone .dz-preview .dz-remove{
+    color: #ba2121;
+    font-size: 12px;
+    font-weight: 100;
+    text-transform: uppercase;
+}
+
