@@ -8,8 +8,8 @@
 {% block extrastyle %}
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
-    <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}dropzone/dist/min/basic.min.css" />
-    <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}dropzone/dist/min/dropzone.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}dropzone/basic.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}dropzone/dropzone.min.css" />
     <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}css/filebrowser.css" />
 {% endblock %}
 
@@ -17,7 +17,7 @@
 {% block extrahead %}
     {{ block.super }}
     <script src="{{ settings_var.URL_FILEBROWSER_MEDIA }}jquery/jquery-3.1.1.min.js"></script>
-    <script src="{{ settings_var.URL_FILEBROWSER_MEDIA }}dropzone/dist/min/dropzone.min.js"></script>
+    <script src="{{ settings_var.URL_FILEBROWSER_MEDIA }}dropzone/dropzone.min.js"></script>
     <script>
         Dropzone.autoDiscover = false;
 
