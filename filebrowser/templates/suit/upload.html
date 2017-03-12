@@ -17,7 +17,7 @@
         Dropzone.autoDiscover = false;
 
         function add_error_message(msg) {
-            $('.messagelist').append('<li class="error">' + msg + '</li>');
+            $('.messagelist').append('<div class="alert alert-error"><button class="close" data-dismiss="alert">×</button>' + msg + '</div>');
         }
 
         $(function(){
@@ -124,6 +124,9 @@
                                         <input type="file" id="id_file" name="files" multiple="multiple" />
                                     </div>
                                 </div>
+
+                                <div class="messagelist"></div>
+
                                 {% for extension in settings_var.EXTENSIONS.items %}
                                 <span class="help-block">
 
