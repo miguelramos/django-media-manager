@@ -63,10 +63,9 @@ class FileBrowseFormField(forms.CharField):
     }
 
     def __init__(self, max_length=None, min_length=None,
-                 directory=None, extensions=None, format=None,
-                 *args, **kwargs):
+                  extensions=None, format=None, *args, **kwargs):
         self.max_length, self.min_length = max_length, min_length
-        self.directory = directory
+        self.directory = kwargs.pop('directory', '')
         self.extensions = extensions
         self.format = format or ''
         self.extensions = extensions or EXTENSIONS.get(format)
