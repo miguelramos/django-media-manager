@@ -72,7 +72,7 @@
 
             dropzone.on('complete', function(file) {
                 if (dropzone.getUploadingFiles().length == 0 && file.status != 'error')
-                    window.location.href = "{% url 'fb_browse' %}";
+                    window.location.href = "{% url 'fb_browse' %}{% query_string %}";
             });
 
             dropzone.on('error', function(file) {
