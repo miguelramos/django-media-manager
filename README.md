@@ -31,7 +31,7 @@ At the moment i'm without time to maintain this great project. To all the people
 
 	pip install django-media-manager
 	or
-	pip install https://github.com/miguelramos/django-media-manager/archive/master.zip
+	pip install git+https://github.com/miguelramos/django-media-manager.git
 
 *	Add filebrowser to INSTALLED_APPS before django.contrib.admin.
 *	Add the following line _before_ the admin URLS:
