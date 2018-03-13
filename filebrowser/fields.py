@@ -38,7 +38,7 @@ class FileBrowseWidget(Input):
     def render(self, name, value, attrs=None):
         if value is None:
             value = ""
-        final_attrs = self.build_attrs(attrs, {'type': self.input_type, 'name': name})
+        final_attrs = self.build_attrs(self.attrs. attrs, type=self.input_type, name=name)
         final_attrs['search_icon'] = os.path.join(
             URL_FILEBROWSER_MEDIA, 'img/filebrowser_icon_show.gif'
         )
@@ -54,6 +54,17 @@ class FileBrowseWidget(Input):
             except:
                 pass
         return render_to_string(_template() + "custom_field.html", locals())
+
+    def build_attrs(self, base_attrs, extra_attrs=None, **kwargs):
+        """
+        Helper function for building an attribute dictionary.
+        Override Widget.build_attrs to support Django<=1.10 and Django>=1.11
+        at the same time.
+        """
+        attrs = dict(base_attrs, **kwargs)
+        if extra_attrs:
+            attrs.update(extra_attrs)
+        return attrs
 
 
 class FileBrowseFormField(forms.CharField):
