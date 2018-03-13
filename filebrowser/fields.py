@@ -38,7 +38,7 @@ class FileBrowseWidget(Input):
     def render(self, name, value, attrs=None):
         if value is None:
             value = ""
-        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        final_attrs = self.build_attrs(attrs, {'type': self.input_type, 'name': name})
         final_attrs['search_icon'] = os.path.join(
             URL_FILEBROWSER_MEDIA, 'img/filebrowser_icon_show.gif'
         )
