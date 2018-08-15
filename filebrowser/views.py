@@ -41,7 +41,7 @@ from filebrowser.forms import MakeDirForm, RenameForm
 filter_re = []
 for exp in EXCLUDE:
     filter_re.append(re.compile(exp))
-for k, v in VERSIONS.items():
+for k in VERSIONS:
     exp = r'_{0}({1})'.format(k, '|'.join(EXTENSION_LIST))
     filter_re.append(re.compile(exp))
 
@@ -93,7 +93,7 @@ def browse(request):
     results_var = {'results_total': 0, 'results_current': 0, 'delete_total': 0,
                    'images_total': 0, 'select_total': 0}
     counter = {}
-    for k, v in EXTENSIONS.items():
+    for k in EXTENSIONS:
         counter[k] = 0
 
     dir_list = os.listdir(abs_path)
