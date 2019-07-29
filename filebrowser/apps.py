@@ -1,6 +1,11 @@
+import django
+
 from django.apps import AppConfig
 from django.views.decorators.cache import never_cache
-from django.core.urlresolvers import reverse
+if django.VERSION[0] < 2:
+    from django.core.urlresolvers import reverse
+else:
+    from django.urls import reverse
 from django.utils.translation import ugettext as _
 
 from filebrowser.conf import fb_settings

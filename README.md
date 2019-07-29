@@ -4,6 +4,9 @@ At the moment i'm without time to maintain this great project. To all the people
 
 # Changelog
 
+### 08-03-2017 v3.5.2
+*   Support Django 2+
+
 ### 08-03-2017 v3.5.0
 *   Removed flash uploader. Instead of this added drag’n’drop file uploads with image previews.
 
@@ -42,7 +45,7 @@ At the moment i'm without time to maintain this great project. To all the people
 ## Suit support
 The application have support for [django-suit](https://github.com/darklow/django-suit) template. To use it add on your settings files the following config:
 
-<code>FILEBROWSER_SUIT_TEMPLATE = True</code> 
+<code>FILEBROWSER_SUIT_TEMPLATE = True</code>
 
 Filebrowser will now use templates for django suit.
 
@@ -98,7 +101,7 @@ class Editor(ModelForm):
 	css = {
     	'all': ('filebrowser/css/suit-filebrowser.css',)
 	}
-	
+
 class AdminPublication(admin.ModelAdmin):
     form = Editor
 
@@ -130,7 +133,7 @@ class AdminPublication(admin.ModelAdmin):
 
 admin.site.register(MediaPublication, AdminPublication)
 ```
-   
+
 The most important things are on ModelForm (Media and Widgets). To use browser on CKEditor and have the button to navigate on filebrowser you only need to add the js file to Media
 
 For Redactor you will have to add the plugin option on the widget (plugin name is mandatory - _filebrowser_ ) and add the css and js file to media.
@@ -152,10 +155,8 @@ That's it you are now ready to send all kind of files to ckeditor or redactor.
 
 Please this is a work in progress. If you have ideas or want to make it better please fel free to pull requests.
 
-*	Better uploader, now using uploadify (some flash elements)
 *	Add more options on thumbs sizes
 
 ### More Info
 
 You can find the original documentation of django-filebrowser and all settings in [Google Code repo](https://code.google.com/p/django-filebrowser/w/list).
-

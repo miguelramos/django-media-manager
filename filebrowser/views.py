@@ -4,7 +4,7 @@
 import os
 import re
 import mimetypes
-
+import django
 # django imports
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404, JsonResponse
@@ -16,7 +16,10 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_str
 from django.conf import settings
 from django import forms
-from django.core.urlresolvers import reverse
+if django.VERSION[0] < 2:
+    from django.core.urlresolvers import reverse
+else:
+    from django.urls import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.move import file_move_safe
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
