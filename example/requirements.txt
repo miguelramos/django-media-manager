@@ -1,7 +1,7 @@
 Django==1.11.23
 PIL==1.1.7
 South==0.8.2
-django-debug-toolbar==0.11.0
+django-debug-toolbar==1.11.1
 django-media-manager==3.3.1
 django-tinymce==1.5.2
 ipdb==0.8
